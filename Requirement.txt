@@ -26,6 +26,14 @@ Map
 
 イベント
 	BathRoom:?、、CheckBoard:?、ChangeClthes:?、Eat:?、stay:?
-	イベント時間調べてくる
+	イベント時間調べてくる　　？時間/１７時間
 	BathRoom、、CheckBoard、ChangeClthes、Eat、stay
 	
+	
+
+	食堂スペース考える
+	20{m}×20{m}?
+	ご飯の時間
+	17時間ー（ご飯時間×３）
+	
+

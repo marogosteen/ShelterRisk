@@ -53,6 +53,7 @@ func (p *Person) ShowPerson() {
 // TODO 壁判定
 // TODO 指向性持たせたい
 // TODO Simulation Mapを関与させたい
+// func (p *Person) Move(xMax int, yMax int) {
 func (p *Person) Move() {
 	x_direction := rand.Intn(2+1) - 1
 	y_direction := rand.Intn(2+1) - 1
@@ -61,8 +62,8 @@ func (p *Person) Move() {
 		y_direction = rand.Intn(2+1) - 1
 	}
 
-	p.CurrentCoodinate.x += rand.Intn(2+1) - 1 // -1~1
-	p.CurrentCoodinate.y += rand.Intn(2+1) - 1 // -1~1
+	p.CurrentCoodinate.x += rand.Intn(2+1) - 1
+	p.CurrentCoodinate.y += rand.Intn(2+1) - 1
 }
 
 // TODO IncubationからInfectionになるプログラム

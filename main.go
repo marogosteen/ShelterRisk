@@ -2,6 +2,7 @@ package main
 
 import (
 	"example/OSURisk/person"
+	"example/OSURisk/simulation"
 	"fmt"
 	"math/rand"
 	"time"
@@ -13,6 +14,12 @@ import (
 
 func main() {
 	rand.Seed(time.Now().Unix())
+	simulation := simulation.NewSimulation()
+
+	fmt.Println(simulation)
+
+	// Person群の初期化
+
 	//最初の場所
 	noma := person.NewPerson(999)
 	sugi := person.NewPerson(990)
