@@ -1,15 +1,40 @@
 package main
 
 import (
+	"example/OSURisk/person"
 	"fmt"
+	"math/rand"
+	"time"
 )
 
-func main() {
-	fmt.Printf("\nrun...\n\n")
+// "fmt"
+// "example/OSURisk/person"
+// "example/OSURisk/lifeevent"
 
-	make_kuku()
-	//fizz_buzz()
-	// zihanki(1000)
-	//suisoku_game()
-	//hairetsu()
-} 
+func main() {
+	rand.Seed(time.Now().Unix())
+	//最初の場所
+	noma := person.NewPerson(999)
+	sugi := person.NewPerson(990)
+	fmt.Printf("noma 1:")
+	noma.ShowPerson()
+	fmt.Printf("sugi 1:")
+	sugi.ShowPerson()
+	fmt.Println()
+
+	noma.Move()
+	sugi.Move()
+	fmt.Printf("noma 2:")
+	noma.ShowPerson()
+	fmt.Printf("sugi 2:")
+	sugi.ShowPerson()
+
+}
+
+//make_kuku()
+//fizz_buzz()
+// zihanki(1000)
+//suisoku_game()
+//hairetsu()
+
+//go build -o main.exe
