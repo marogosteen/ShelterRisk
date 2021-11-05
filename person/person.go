@@ -74,12 +74,17 @@ func (p *Person) InfectionTest() {
 	}
 }
 
-// TODO ご飯は時間べーすでDecideする
+// TODO ご飯は時間ベースでDecideする
 func (p *Person) EventDecide() {
+	//for i:=0; i<3; i++{
+		//
+	}
+	//
+	
+
 	// stay:=0.75
 	//
 	// rand.Seed(Intn(4))
 	// secretNumber= rand.Str(4)
-
 	// for i :=0; i<
-}
+
