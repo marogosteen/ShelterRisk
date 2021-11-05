@@ -25,8 +25,8 @@ Map
 		1/10の確率で感染　％変えたら？
 
 イベント
-	BathRoom:?、、CheckBoard:?、ChangeClthes:?、Eat:?、stay:?
-	イベント時間調べてくる　　？時間/１７時間
+	BathRoom:30min、CheckBoard:20min、ChangeClthes:20min、Eat:90min、stay:860min(14時間20分)
+	イベント時間調べてくる　　７０分/９３０分
 	BathRoom、、CheckBoard、ChangeClthes、Eat、stay
 	
 	
@@ -34,6 +34,6 @@ Map
 	食堂スペース考える
 	20{m}×20{m}?
 	ご飯の時間
-	17時間ー（ご飯時間×３）
+	1020min(17時間)ー90min=930min(15時間30分) 8.82352941%
 	
 
