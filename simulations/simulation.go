@@ -1,12 +1,15 @@
 package simulations
 
+import "example/OSURisk/people"
+
 type Simulation struct {
 	Map        [][]int
 	CurrentSec int
 	EndSec     int
+	People     []people.Person
 }
 
-func generateMap(xSize int, ySize int) [][]int{
+func generateMap(xSize int, ySize int) [][]int {
 	mapYSize := 21
 	mapXSize := 13
 	simulationMap := make([][]int, mapYSize)
@@ -21,7 +24,7 @@ func NewGymSimulation() *Simulation {
 	xMapSize := 13
 	yMapSize := 21
 	gymSimulation := Simulation{
-		Map: generateMap(xMapSize, yMapSize),
+		Map:        generateMap(xMapSize, yMapSize),
 		CurrentSec: 0,
 		EndSec:     428400, //17時間×７日 (17hour × 60min × 60sec × 7days)
 	}
@@ -42,8 +45,14 @@ func NewDiningSimulation() *Simulation {
 }
 
 func (s *Simulation) Run(diffSec int) {
-	currentSec := 0
+	for currentSec := 0; currentSec < s.EndSec; currentSec += diffSec {
+		for _, person := range s.People{
+			person.Move()
+		}
+		
+	}
 }
+
 //tauch＆goでシミュレーションする。
 //乱数で決めるため、全体からの％いる？
 //bathroom:30/930(3.325%),CB:20/930(2.150%),CC:20/930(2.150%),
