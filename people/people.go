@@ -13,3 +13,17 @@ func NewPeople(peopleCount int) *People{
 	}
 	return &people
 }
+
+	func (LivingSpeace) {
+		var voo[][] int
+		
+
+	for i := 0; i < 5; i++ {
+		for j:=0; j<11; {
+			voo [i][j]=(i+2)+(j+2)
+	}
+	}
+		fmt.Prentln(voo)
+	}
+
+	//
