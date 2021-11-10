@@ -1,41 +1,34 @@
 package people
 
+import "math/rand"
+
 type People struct {
-	PeopleList []Person
+	PersonList []Person
 }
 
-func NewPeople(peopleCount int) *People {
+func NewPeople(peopleCount int, infectedPersonCount int) *People {
 	people := People{
-		PeopleList: make([]Person, peopleCount),
+		PersonList: make([]Person, peopleCount),
 	}
 	for i := 0; i < 100; i++ {
-		people.PeopleList[i] = *NewPerson(i)
+		people.PersonList[i] = *NewPerson(i)
 	}
+	people.setInfected(infectedPersonCount)
 	return &people
 }
 
-	func (LivingSpeace) {
-		var voo[][] int
-		
-
-	for i := 0; i < 5; i++ {
-		for j:=0; j<11; {
-			voo [i][j]=(i+2)+(j+2)
+func (p *People) setInfected(infectedPersonCount int) {
+	// TODO 感染者数がシミュレーション人数より多い場合はエラー
+	// if len(p.PersonList) < infectedPersonCount{
+	// 	panic()
+	// }
+	var idList []int
+	for i:=0; i<len(p.PersonList); i++ {
+		idList = append(idList, i)
 	}
-	}
-		fmt.Prentln(voo)
-	}
-
-	//
-func (p *People) Move() {
-	for _, person := range p.PeopleList {
-		person.Move()
-	}
-}
-
-// TODO IncubationからInfectionになるプログラム
-func (p *People) InfectionTest() {
-	for _, person := range p.PeopleList {
-		person.InfectionTest()
+	for i:=0; i<infectedPersonCount; i++ {
+		index := rand.Intn(len(idList))
+		p.PersonList[idList[index]].InfectionStatus = EnumInfectionStatus.Infection
+		idList = append(idList[:index], idList[index+1:]...)
 	}
 }

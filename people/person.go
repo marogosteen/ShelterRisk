@@ -5,7 +5,7 @@ import (
 	"math/rand"
 )
 
-type coodinate struct {
+type Coodinate struct {
 	x int
 	y int
 }
@@ -16,7 +16,7 @@ type infectionStatus struct {
 	Infection  string // 感染
 }
 
-var foo = infectionStatus{
+var EnumInfectionStatus = infectionStatus{
 	Health:     "Health",
 	Incubation: "Incubation",
 	Infection:  "Infection",
@@ -24,20 +24,20 @@ var foo = infectionStatus{
 
 type Person struct {
 	Id               int       // ID
-	CurrentCoodinate coodinate // 現在地
-	StartCoodinate   coodinate // スタート地点
+	CurrentCoodinate Coodinate // 現在地
+	StartCoodinate   Coodinate // スタート地点
 	EventelapsedTime int       // イベント経過時間
 	InfectionStatus  string    // 感染状況
 }
 
 func NewPerson(inputId int) *Person {
-	coodinate := coodinate{x: 0, y: 1}
+	coodinate := Coodinate{x: 0, y: 1}
 	p := Person{
 		Id:               inputId,
 		CurrentCoodinate: coodinate,
 		StartCoodinate:   coodinate,
 		EventelapsedTime: 0,
-		InfectionStatus:  foo.Health,
+		InfectionStatus:  EnumInfectionStatus.Health,
 	}
 	return &p
 }
@@ -52,37 +52,40 @@ func (p *Person) ShowPerson() {
 
 // TODO 壁判定
 // TODO 指向性持たせたい
-// TODO Simulation Mapを関与させたい
 // func (p *Person) Move(xMax int, yMax int) {
-func (p *Person) Move() {
-	x_direction := rand.Intn(2+1) - 1
-	y_direction := rand.Intn(2+1) - 1
-	if x_direction == 0 && y_direction == 0{
+func (p *Person) Move() *Person{
+	var (
+		x_direction int
+		y_direction int
+	)
+
+	for i := 0; i < 2; i++ {
 		x_direction = rand.Intn(2+1) - 1
 		y_direction = rand.Intn(2+1) - 1
+		if !(x_direction == 0 && y_direction == 0) {
+			break
+		}
 	}
 
-	p.CurrentCoodinate.x += rand.Intn(2+1) - 1
-	p.CurrentCoodinate.y += rand.Intn(2+1) - 1
+	p.CurrentCoodinate.x += x_direction
+	p.CurrentCoodinate.y += y_direction
+
+	return p
 }
 
 // TODO IncubationからInfectionになるプログラム
 func (p *Person) InfectionTest() {
 	infectionThreshold := 0.1
 	if infectionThreshold > rand.Float64() {
-		p.InfectionStatus = foo.Incubation
+		p.InfectionStatus = EnumInfectionStatus.Incubation
 	}
 }
 
 // TODO ご飯は時間ベースでDecideする
 func (p *Person) EventDecide() {
-	
-	
+
 	//for i:=0; i<3; i++{
-		//
-	}
 	//
-	
+}
 
-	
-
+//
