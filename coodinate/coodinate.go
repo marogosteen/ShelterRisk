@@ -3,8 +3,8 @@ package coodinate
 import "math/rand"
 
 type Coodinate struct {
-	X int
 	Y int
+	X int
 }
 
 func (c *Coodinate) Move() Coodinate {
@@ -22,7 +22,7 @@ func (c *Coodinate) Move() Coodinate {
 	}
 
 	return Coodinate{
-		X: c.X + x_course, 
-		Y: c.Y+y_course,
+		X: c.X + x_course,
+		Y: c.Y + y_course,
 	}
 }

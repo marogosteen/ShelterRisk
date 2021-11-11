@@ -40,19 +40,23 @@ func setInfected(people []Person, infectedPersonCount int) {
 }
 
 // TODO diviend < divisor のエラー処理
-func getLivingPosition(peopleCount int, currentId int) coodinate.Coodinate {
+func getLivingPosition(peopleCount int, personId int) coodinate.Coodinate {
 	livingSpaceCapacity := 100
 	yLivingSpaceCapacity := livingSpaceCapacity / 10
 	xLivingSpaceCapacity := livingSpaceCapacity / yLivingSpaceCapacity
 	byDivisible := getByDivisible(livingSpaceCapacity, peopleCount)
-	whetherRemainder := currentId / byDivisible
+	whetherRemainder := personId / byDivisible
 	step := livingSpaceCapacity / byDivisible
 
-	livingSpaceId := (currentId-whetherRemainder*byDivisible)*step + step/2*whetherRemainder
+	livingPositionId := (personId-whetherRemainder*byDivisible)*step +
+		step/2*whetherRemainder
+	// 住居スペースが１マス２人であることを表現するために/2をした
+	livingPositionId /= 2
 
 	return coodinate.Coodinate{
-		Y: livingSpaceId / yLivingSpaceCapacity * 2,
-		X: livingSpaceId % xLivingSpaceCapacity,
+		// 廊下スペースの表現するために*2をした
+		Y: livingPositionId / yLivingSpaceCapacity * 2,
+		X: livingPositionId % xLivingSpaceCapacity,
 	}
 }
 

@@ -16,10 +16,14 @@ func main() {
 
 	// 3回/1日 実施 Map size (11マス*11マス) (20m*20m) 1800sec
 	diningSimulation := simulations.Simulation{
-		MapSize: coodinate.Coodinate{X: 11, Y: 10},
+		MapSize: coodinate.Coodinate{X: 11, Y: 11},
 		EndSec:  1800,
 		People:  people.GeneratePeople(100, 2),
 	}
+
+	// for _, person := range diningSimulation.People {
+	// 	fmt.Printf("%+v\n", person)
+	// }
 
 	//428400, //17時間×７日 (17hour × 60min × 60sec × 7days)
 
