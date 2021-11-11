@@ -1,14 +1,10 @@
 package people
 
 import (
-	"fmt"
 	"math/rand"
-)
 
-type Coodinate struct {
-	x int
-	y int
-}
+	"example/OSURisk/coodinate"
+)
 
 type infectionStatus struct {
 	Health     string // 健全
@@ -23,62 +19,54 @@ var EnumInfectionStatus = infectionStatus{
 }
 
 type Person struct {
-	Id               int       // ID
-	CurrentCoodinate Coodinate // 現在地
-	StartCoodinate   Coodinate // スタート地点
-	EventelapsedTime int       // イベント経過時間
-	InfectionStatus  string    // 感染状況
+	Id               int                 // ID
+	NowPosition      coodinate.Coodinate // 現在地
+	StartCoodinate   coodinate.Coodinate // スタート地点
+	EventelapsedTime int                 // イベント経過時間
+	InfectionStatus  string              // 感染状況
 }
 
-func NewPerson(inputId int) *Person {
-	coodinate := Coodinate{x: 0, y: 1}
+func NewPerson(inputId int) Person {
+	coodinate := coodinate.Coodinate{X: 0, Y: 1}
 	p := Person{
 		Id:               inputId,
-		CurrentCoodinate: coodinate,
+		NowPosition:      coodinate,
 		StartCoodinate:   coodinate,
 		EventelapsedTime: 0,
 		InfectionStatus:  EnumInfectionStatus.Health,
 	}
-	return &p
-}
-
-func (p *Person) ShowPerson() {
-	fmt.Printf(
-		"ID: %v, CCy:%v, CCx:%v, SCy:%v, SCx:%v, EventTime:%v\n",
-		p.Id, p.CurrentCoodinate.y, p.CurrentCoodinate.x,
-		p.StartCoodinate.y, p.StartCoodinate.x, p.EventelapsedTime,
-	)
+	return p
 }
 
 // TODO 壁判定
 // TODO 指向性持たせたい
-// func (p *Person) Move(xMax int, yMax int) {
-func (p *Person) Move() *Person{
-	var (
-		x_direction int
-		y_direction int
-	)
-
-	for i := 0; i < 2; i++ {
-		x_direction = rand.Intn(2+1) - 1
-		y_direction = rand.Intn(2+1) - 1
-		if !(x_direction == 0 && y_direction == 0) {
+func (p *Person) Move(mapSize coodinate.Coodinate) {
+	var nextPosition coodinate.Coodinate
+	for {
+		nextPosition = p.NowPosition.Move()
+		isCollision := collisionDetection(nextPosition, mapSize)
+		if !isCollision {
 			break
 		}
 	}
+	p.NowPosition = nextPosition
+}
 
-	p.CurrentCoodinate.x += x_direction
-	p.CurrentCoodinate.y += y_direction
-
-	return p
+func collisionDetection(nextPosition coodinate.Coodinate, mapSize coodinate.Coodinate) bool {
+	collision := mapSize.X < nextPosition.X ||
+		mapSize.Y < nextPosition.Y ||
+		0 > nextPosition.X ||
+		0 > nextPosition.Y
+	return collision
 }
 
 // TODO IncubationからInfectionになるプログラム
-func (p *Person) InfectionTest() {
+func (p *Person) InfectionTest() string{
 	infectionThreshold := 0.1
 	if infectionThreshold > rand.Float64() {
-		p.InfectionStatus = EnumInfectionStatus.Incubation
+		return EnumInfectionStatus.Incubation
 	}
+	return EnumInfectionStatus.Health
 }
 
 // TODO ご飯は時間ベースでDecideする
