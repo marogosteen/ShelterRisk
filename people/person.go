@@ -22,20 +22,8 @@ type Person struct {
 	Id               int                 // ID
 	NowPosition      coodinate.Coodinate // 現在地
 	StartCoodinate   coodinate.Coodinate // スタート地点
-	EventelapsedTime int                 // イベント経過時間
+	EventElapsedTime int                 // イベント経過時間
 	InfectionStatus  string              // 感染状況
-}
-
-func NewPerson(inputId int) Person {
-	coodinate := coodinate.Coodinate{X: 0, Y: 1}
-	p := Person{
-		Id:               inputId,
-		NowPosition:      coodinate,
-		StartCoodinate:   coodinate,
-		EventelapsedTime: 0,
-		InfectionStatus:  EnumInfectionStatus.Health,
-	}
-	return p
 }
 
 // TODO 壁判定
@@ -75,5 +63,3 @@ func (p *Person) EventDecide() {
 	//for i:=0; i<3; i++{
 	//
 }
-
-//

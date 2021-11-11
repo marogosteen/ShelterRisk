@@ -6,9 +6,8 @@ import (
 )
 
 type Simulation struct {
-	MapSize    coodinate.Coodinate
-	currentSec int
-	EndSec     int
+	MapSize coodinate.Coodinate
+	EndSec  int
 	// People     *[]people.Person
 	People []people.Person
 }
