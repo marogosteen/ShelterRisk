@@ -2,44 +2,54 @@ package simulations
 
 import (
 	"example/OSURisk/coodinate"
+	"example/OSURisk/infectionStatus"
 	"example/OSURisk/people"
 )
 
 type Simulation struct {
 	MapSize coodinate.Coodinate
 	EndSec  int
-	// People     *[]people.Person
 	People []people.Person
 }
 
-// Map size (21, 13)
-// func NewGymSimulation(p people.People) *Simulation {
-// 	gymSimulation := Simulation{
-// 		CurrentSec: 0,
-// 		EndSec:     428400, //17時間×７日 (17hour × 60min × 60sec × 7days)
-// 		People:     p,
-// 	}
-// 	return &gymSimulation
-// }
+func (s *Simulation) GymRun(diffSec int) {
+	// Eventから目的地をセット
 
-func (s *Simulation) Run(diffSec int) {
 	for currentSec := 0; currentSec <= s.EndSec; currentSec += diffSec {
 		for index, person := range s.People {
 			person.Move(s.MapSize)
 			s.People[index] = person
 		}
-		s.infectionTest()
+		s.infectionJudge()
 	}
 }
 
-func (s *Simulation) infectionTest() {
+func (s *Simulation) DiningRun(diffSec int) {
+	for currentSec := 0; currentSec <= s.EndSec; currentSec += diffSec {
+		for index, person := range s.People {
+			person.Move(s.MapSize)
+			s.People[index] = person
+		}
+		s.infectionJudge()
+	}
+}
+
+/* 
+特定の条件を全て満たしたPersonに対して一定の確率で感染させる。
+	[terms]
+	同じ座標に2人以上がPersonが位置している。
+	同じ座標上に位置するPersonの中に1人以上の感染者がいる。
+
+*/
+func (s *Simulation) infectionJudge() {
 	positionsMap := make(map[coodinate.Coodinate][]people.Person)
 	infectedCountMap := make(map[coodinate.Coodinate]int)
 
+	// 同じ座標上に位置するPersonと感染したPersonをそれぞれカウントする。
 	for _, person := range s.People {
 		key := person.NowPosition
 		positionsMap[key] = append(positionsMap[key], person)
-		if person.InfectionStatus != people.EnumInfectionStatus.Health {
+		if person.InfectionStatus != infectionStatus.Health {
 			infectedCountMap[key]++
 		}
 	}
@@ -50,16 +60,11 @@ func (s *Simulation) infectionTest() {
 		}
 		for _, person := range position {
 			for i := 0; i < infectedCountMap[key]; i++ {
-				if person.InfectionStatus != people.EnumInfectionStatus.Health {
+				if person.InfectionStatus != infectionStatus.Health {
 					break
 				}
-				s.People[person.Id].InfectionStatus = person.InfectionTest()
+				s.People[person.Id].InfectionStatus = person.InfectionJudge()
 			}
 		}
 	}
 }
-
-//tauch＆goでシミュレーションする。
-//乱数で決めるため、全体からの％いる？
-//bathroom:30/930(3.325%),CB:20/930(2.150%),CC:20/930(2.150%),
-//乱数でぶらぶらして、目的地に行くのは現実てきか？

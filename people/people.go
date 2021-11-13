@@ -3,7 +3,9 @@ package people
 import (
 	"math/rand"
 
+	"example/OSURisk/action"
 	"example/OSURisk/coodinate"
+	"example/OSURisk/infectionStatus"
 )
 
 func GeneratePeople(peopleCount int, infectedPersonCount int) []Person {
@@ -11,11 +13,11 @@ func GeneratePeople(peopleCount int, infectedPersonCount int) []Person {
 	for id := 0; id < len(people); id++ {
 		livingPosition := getLivingPosition(peopleCount, id)
 		people[id] = Person{
-			Id:               id,
-			StartCoodinate:   livingPosition,
-			NowPosition:      livingPosition,
-			EventElapsedTime: 0,
-			InfectionStatus:  EnumInfectionStatus.Health,
+			Id:              id,
+			StartPosition:  livingPosition,
+			NowPosition:     livingPosition,
+			InfectionStatus: infectionStatus.Health,
+			Action:          action.GetRandomAction(),
 		}
 	}
 	setInfected(people, infectedPersonCount)
@@ -34,7 +36,7 @@ func setInfected(people []Person, infectedPersonCount int) {
 	for i := 0; i < infectedPersonCount; i++ {
 		idIndex := rand.Intn(len(idList))
 		id := idList[idIndex]
-		people[id].InfectionStatus = EnumInfectionStatus.Infection
+		people[id].InfectionStatus = infectionStatus.Infection
 		idList = append(idList[:idIndex], idList[idIndex+1:]...)
 	}
 }

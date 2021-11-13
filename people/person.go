@@ -3,31 +3,22 @@ package people
 import (
 	"math/rand"
 
+	"example/OSURisk/action"
 	"example/OSURisk/coodinate"
+	"example/OSURisk/infectionStatus"
 )
 
-type infectionStatus struct {
-	Health     string // 健全
-	Incubation string // 潜伏期間
-	Infection  string // 感染
-}
-
-var EnumInfectionStatus = infectionStatus{
-	Health:     "Health",
-	Incubation: "Incubation",
-	Infection:  "Infection",
-}
-
+// 一人の人間を表現したStruct。
 type Person struct {
-	Id               int                 // ID
-	NowPosition      coodinate.Coodinate // 現在地
-	StartCoodinate   coodinate.Coodinate // スタート地点
-	EventElapsedTime int                 // イベント経過時間
-	InfectionStatus  string              // 感染状況
+	Id              int                             // ID
+	NowPosition     coodinate.Coodinate             // 現在地
+	StartPosition   coodinate.Coodinate             // スタート地点
+	InfectionStatus infectionStatus.InfectionStatus // 感染状況
+	Action          action.Action                   // 生活活動
 }
 
-// TODO 壁判定
 // TODO 指向性持たせたい
+// PersonのNowPositionを変化させる。
 func (p *Person) Move(mapSize coodinate.Coodinate) {
 	var nextPosition coodinate.Coodinate
 	for {
@@ -40,6 +31,7 @@ func (p *Person) Move(mapSize coodinate.Coodinate) {
 	p.NowPosition = nextPosition
 }
 
+// MapSize以上に移動しているかを判定する
 func collisionDetection(nextPosition coodinate.Coodinate, mapSize coodinate.Coodinate) bool {
 	collision := mapSize.X < nextPosition.X ||
 		mapSize.Y < nextPosition.Y ||
@@ -48,18 +40,11 @@ func collisionDetection(nextPosition coodinate.Coodinate, mapSize coodinate.Cood
 	return collision
 }
 
-// TODO IncubationからInfectionになるプログラム
-func (p *Person) InfectionTest() string{
+// 一定の確率で感染者と判定する。
+func (p *Person) InfectionJudge() infectionStatus.InfectionStatus {
 	infectionThreshold := 0.1
 	if infectionThreshold > rand.Float64() {
-		return EnumInfectionStatus.Incubation
+		return infectionStatus.Infection
 	}
-	return EnumInfectionStatus.Health
-}
-
-// TODO ご飯は時間ベースでDecideする
-func (p *Person) EventDecide() {
-
-	//for i:=0; i<3; i++{
-	//
+	return infectionStatus.Health
 }

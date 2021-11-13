@@ -25,9 +25,10 @@ Map
 		1/10の確率で感染　％変えたら？
 
 イベント
-	BathRoom:30min、CheckBoard:20min、ChangeClthes:20min、Eat:90min、stay:860min(14時間20分)
-	イベント時間調べてくる　　７０分/９３０分
-	BathRoom、、CheckBoard、ChangeClthes、Eat、stay
+	BathRoom:30min、CheckBoard:20min、ChangeClthes:20min、Eat:90min、stay:860min(14時間20分), Tolal:17hours
+
+	食事以外のEventが発生する確率 (eventTime/930)
+		BathRoom: 4%、CheckBoard 4%、ChangeClthes 4%、stay: 92%
 	
 	
 
@@ -37,3 +38,29 @@ Map
 	1020min(17時間)ー90min=930min(15時間30分) 8.82352941%
 	
 
+Noma Thinking
+	gym simulation と dinig simulation の違い
+		食事の時のみPositonの初期化が必要。->Runで対応
+
+		gymの時のみeventStatusの判定とeventElapsedSecの計算。->Runで実行。event or person or simulationで実装。
+
+		Move	
+			移動しないという選択の確率が高い。->確率の引数が必要？
+			指向性がある。->目的地の引数が必要？食事の際は目的地がないが、どう対応する？
+		
+		->これらを踏まえてstructか、methodのどちらで違いを埋めるのか。
+
+	eventElapsedSec は time liblary を使う??
+
+
+gym simulation run
+	目的地のSet
+	Move
+	InfectionTest
+	Eventから目的地を設定する。　（EventはGenerateでGetする）
+		Eventは終わると、次のEventを決めるようにする。 -> どこかのMoveで必須
+
+	Move
+		stayは動かない、感染しない、時間のSetが必要
+
+１マス４人
