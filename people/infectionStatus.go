@@ -1,4 +1,4 @@
-package infectionStatus
+package people
 
 type InfectionStatus int
 

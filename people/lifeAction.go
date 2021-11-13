@@ -1,4 +1,4 @@
-package lifeAction
+package people
 
 import (
 	"math/rand"

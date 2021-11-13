@@ -4,8 +4,6 @@ import (
 	"math/rand"
 
 	"example/OSURisk/coodinate"
-	"example/OSURisk/infectionStatus"
-	"example/OSURisk/lifeAction"
 )
 
 func GeneratePeople(peopleCount int, infectedPersonCount int) []Person {
@@ -13,13 +11,13 @@ func GeneratePeople(peopleCount int, infectedPersonCount int) []Person {
 	people := make([]Person, peopleCount)
 	for id := 0; id < len(people); id++ {
 		livingPosition := getLivingPosition(peopleCount, id)
-		lifeaction := lifeAction.GetRandomAction()
+		lifeaction := GetRandomAction()
 		// distination := 
 		people[id] = Person{
 			Id:              id,
 			HomePosition:    livingPosition,
 			NowPosition:     livingPosition,
-			InfectionStatus: infectionStatus.Health,
+			InfectionStatus: Health,
 			LifeAction:      lifeaction,
 			// Distination: ,
 		}
@@ -42,7 +40,7 @@ func setInfected(people []Person, infectedPersonCount int) {
 	for i := 0; i < infectedPersonCount; i++ {
 		idIndex := rand.Intn(len(idList))
 		id := idList[idIndex]
-		people[id].InfectionStatus = infectionStatus.Infection
+		people[id].InfectionStatus = Infection
 		idList = append(idList[:idIndex], idList[idIndex+1:]...)
 	}
 }
