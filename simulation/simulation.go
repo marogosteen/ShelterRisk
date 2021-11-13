@@ -1,4 +1,4 @@
-package simulations
+package simulation
 
 import (
 	"example/OSURisk/coodinate"
@@ -9,12 +9,10 @@ import (
 type Simulation struct {
 	MapSize coodinate.Coodinate
 	EndSec  int
-	People []people.Person
+	People  []people.Person
 }
 
 func (s *Simulation) GymRun(diffSec int) {
-	// Eventから目的地をセット
-
 	for currentSec := 0; currentSec <= s.EndSec; currentSec += diffSec {
 		for index, person := range s.People {
 			person.Move(s.MapSize)
@@ -34,7 +32,7 @@ func (s *Simulation) DiningRun(diffSec int) {
 	}
 }
 
-/* 
+/*
 特定の条件を全て満たしたPersonに対して一定の確率で感染させる。
 	[terms]
 	同じ座標に2人以上がPersonが位置している。

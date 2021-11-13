@@ -3,22 +3,28 @@ package people
 import (
 	"math/rand"
 
-	"example/OSURisk/action"
 	"example/OSURisk/coodinate"
 	"example/OSURisk/infectionStatus"
+	"example/OSURisk/lifeAction"
 )
 
 func GeneratePeople(peopleCount int, infectedPersonCount int) []Person {
+
 	people := make([]Person, peopleCount)
 	for id := 0; id < len(people); id++ {
 		livingPosition := getLivingPosition(peopleCount, id)
+		lifeaction := lifeAction.GetRandomAction()
+		// distination := 
 		people[id] = Person{
 			Id:              id,
-			StartPosition:  livingPosition,
+			HomePosition:    livingPosition,
 			NowPosition:     livingPosition,
 			InfectionStatus: infectionStatus.Health,
-			Action:          action.GetRandomAction(),
+			LifeAction:      lifeaction,
+			// Distination: ,
 		}
+		// いやいや。。。Actionを元に行き先はわかるんじゃね？？
+		// いや、しかも、MoveにはMapSizeがあるから、都合いいのでは？？
 	}
 	setInfected(people, infectedPersonCount)
 	return people

@@ -5,15 +5,16 @@ import (
 	"math/rand"
 	"time"
 
+	"example/OSURisk/config"
 	"example/OSURisk/coodinate"
 	"example/OSURisk/people"
-	"example/OSURisk/simulations"
+	"example/OSURisk/simulation"
 )
 
 // TODO 10人だと住居スペースが縦に並ぶ。
 
 func main() {
-	diffSec := 3
+	var config = config.Config
 	rand.Seed(time.Now().Unix())
 
 	// 3回/1日 実施 Map size (11マス*11マス) (20m*20m) 1800sec
@@ -26,13 +27,13 @@ func main() {
 
 	//428400, //17時間×７日 (17hour × 60min × 60sec × 7days)
 	// parameterはConfigで指定する。
-	simulation := simulations.Simulation{
+	simulation := simulation.Simulation{
 		// 11マス*11マス以下のmapSize指定はError吐くべきでは？ あるいは固定する。
-		MapSize: coodinate.Coodinate{Y: 30, X:15},
-		EndSec: 428400,
-		People: people.GeneratePeople(100, 2),
+		MapSize: coodinate.Coodinate{Y: config.MapSizeY, X: config.MapSizeX},
+		EndSec:  428400,
+		People:  people.GeneratePeople(config.PeopleCount, config.InfectedCount),
 	}
-	simulation.GymRun(diffSec)
+	simulation.GymRun(config.TimeInterval)
 
 	fmt.Printf("\nDone!\n")
 }

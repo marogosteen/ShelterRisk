@@ -1,13 +1,15 @@
 package coodinate
 
-import "math/rand"
+import (
+	"math/rand"
+)
 
 type Coodinate struct {
 	Y int
 	X int
 }
 
-func (c *Coodinate) Move() Coodinate {
+func (c *Coodinate) Move(distination Coodinate) Coodinate {
 	var (
 		x_course int
 		y_course int
