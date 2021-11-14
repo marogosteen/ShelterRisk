@@ -2,32 +2,30 @@ package people
 
 import (
 	"math/rand"
-
-	"example/OSURisk/coodinate"
 )
 
+// Configで指定された人数のpersonを生成し、スライスにする。
 func GeneratePeople(peopleCount int, infectedPersonCount int) []Person {
-
 	people := make([]Person, peopleCount)
 	for id := 0; id < len(people); id++ {
 		livingPosition := getLivingPosition(peopleCount, id)
-		lifeaction := GetRandomAction()
-		// distination := 
+		lifeAction := GetRandomAction()
+		distinationList := DistinationListMap[lifeAction]
 		people[id] = Person{
 			Id:              id,
 			HomePosition:    livingPosition,
 			NowPosition:     livingPosition,
+			Distination:     distinationList[0],
+			PassedCount:     0,
 			InfectionStatus: Health,
-			LifeAction:      lifeaction,
-			// Distination: ,
+			LifeAction:      lifeAction,
 		}
-		// いやいや。。。Actionを元に行き先はわかるんじゃね？？
-		// いや、しかも、MoveにはMapSizeがあるから、都合いいのでは？？
 	}
 	setInfected(people, infectedPersonCount)
 	return people
 }
 
+// ランダムに指定された人数を感染者に変更する
 func setInfected(people []Person, infectedPersonCount int) {
 	// TODO 感染者数がシミュレーション人数より多い場合はエラー
 	// if len(p.PersonList) < infectedPersonCount{
@@ -46,7 +44,7 @@ func setInfected(people []Person, infectedPersonCount int) {
 }
 
 // TODO diviend < divisor のエラー処理
-func getLivingPosition(peopleCount int, personId int) coodinate.Coodinate {
+func getLivingPosition(peopleCount int, personId int) Position {
 	livingSpaceCapacity := 100
 	yLivingSpaceCapacity := livingSpaceCapacity / 10
 	xLivingSpaceCapacity := livingSpaceCapacity / yLivingSpaceCapacity
@@ -59,7 +57,7 @@ func getLivingPosition(peopleCount int, personId int) coodinate.Coodinate {
 	// 住居スペースが１マス２人であることを表現するために/2をした
 	livingPositionId /= 2
 
-	return coodinate.Coodinate{
+	return Position{
 		// 廊下スペースの表現するために*2をした
 		Y: livingPositionId / yLivingSpaceCapacity * 2,
 		X: livingPositionId % xLivingSpaceCapacity,

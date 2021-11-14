@@ -4,6 +4,7 @@ import (
 	"math/rand"
 )
 
+// トイレや食事などの生活する上での活動を表現したEnum。
 type LifeAction int
 
 const (
@@ -12,7 +13,7 @@ const (
 	ChangeClthes
 	BathRoom
 	Eat
-	GoBack
+	GoHome
 )
 
 // ランダムで決まるActionのMap。強制に設定させるEatやGobackは含まれない。

@@ -1,13 +1,9 @@
-package simulation
+package core
 
-import (
-	"example/OSURisk/coodinate"
-	"example/OSURisk/infectionStatus"
-	"example/OSURisk/people"
-)
+import "example/OSURisk/people"
 
 type Simulation struct {
-	MapSize coodinate.Coodinate
+	MapSize people.Position
 	EndSec  int
 	People  []people.Person
 }
@@ -15,6 +11,9 @@ type Simulation struct {
 func (s *Simulation) GymRun(diffSec int) {
 	for currentSec := 0; currentSec <= s.EndSec; currentSec += diffSec {
 		for index, person := range s.People {
+			if person.IsReach() {
+				person.SetNextDistination()
+			}
 			person.Move(s.MapSize)
 			s.People[index] = person
 		}
@@ -40,14 +39,14 @@ func (s *Simulation) DiningRun(diffSec int) {
 
 */
 func (s *Simulation) infectionJudge() {
-	positionsMap := make(map[coodinate.Coodinate][]people.Person)
-	infectedCountMap := make(map[coodinate.Coodinate]int)
+	positionsMap := make(map[people.Position][]people.Person)
+	infectedCountMap := make(map[people.Position]int)
 
 	// 同じ座標上に位置するPersonと感染したPersonをそれぞれカウントする。
 	for _, person := range s.People {
 		key := person.NowPosition
 		positionsMap[key] = append(positionsMap[key], person)
-		if person.InfectionStatus != infectionStatus.Health {
+		if person.InfectionStatus != people.Health {
 			infectedCountMap[key]++
 		}
 	}
@@ -58,7 +57,7 @@ func (s *Simulation) infectionJudge() {
 		}
 		for _, person := range position {
 			for i := 0; i < infectedCountMap[key]; i++ {
-				if person.InfectionStatus != infectionStatus.Health {
+				if person.InfectionStatus != people.Health {
 					break
 				}
 				s.People[person.Id].InfectionStatus = person.InfectionJudge()

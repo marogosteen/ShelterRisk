@@ -1,47 +1,28 @@
 package people
 
 import (
-	"example/OSURisk/coodinate"
+	"example/OSURisk/config"
 	"math/rand"
 )
 
 // 一人の人間を表現したStruct。
 type Person struct {
-	Id              int                             // ID
-	NowPosition     coodinate.Coodinate             // 現在地
-	HomePosition    coodinate.Coodinate             // スタート地点
-	Distination     coodinate.Coodinate             // 目的地
+	Id              int             // ID
+	NowPosition     Position        // 現在地
+	HomePosition    Position        // スタート地点
+	Distination     Position        // 目的地
+	PassedCount     int             // 目的地の通過数
 	InfectionStatus InfectionStatus // 感染状況
-	LifeAction      LifeAction           // 生活活動
+	LifeAction      LifeAction      // 生活活動
 }
 
-// 目的地をActionとMapSizeから求める。初期化時と、目的地に到達時に目的地を変更する。
-// Eatの移動は複雑。
-// ConfigでSetするのもあり。
-
 // TODO 指向性持たせたい
-// PersonのNowPositionを変化させる。
-func (p *Person) Move(mapSize coodinate.Coodinate) {
-	/*
-		毎度DistinationをSetするのは無駄
-		Personのfieldに持たすべき？？
-	*/
-
-	distination := p.setDistination()
-
-	// 目的地に到達した場合、次のGoBackに変更する。HomePositionに戻った場合、次のActionをSet
-	if p.NowPosition == distination {
-		if p.LifeAction == GoBack {
-			p.LifeAction = GetRandomAction()
-		} else {
-			p.LifeAction = GoBack
-		}
-		p.LifeAction = GoBack
-	}
-
-	var nextPosition coodinate.Coodinate
+// PersonのNowPositionをdistination方向に変化させる。
+func (p *Person) Move(mapSize Position) {
+	var nextPosition Position
 	for {
-		nextPosition = p.NowPosition.Move(distination)
+		// TODO Moveはこっちに移動したい
+		nextPosition = p.NowPosition.Move(p.Distination)
 		isCollision := collisionDetection(nextPosition, mapSize)
 		if !isCollision {
 			break
@@ -51,18 +32,41 @@ func (p *Person) Move(mapSize coodinate.Coodinate) {
 	p.NowPosition = nextPosition
 }
 
-// 目的地に到達した場合、次のGoBackに変更する。HomePositionに戻った場合、次のActionをSet
-func (p *Person) setDistination() coodinate.Coodinate {
-	if p.LifeAction == GoBack {
-		p.LifeAction = GetRandomAction()
-	} else {
-		p.LifeAction = GoBack
+// 目的地に到達したかをboolで返す
+func (p *Person) IsReach() (isGoaled bool) {
+	distination := DistinationListMap[p.LifeAction][p.PassedCount]
+	isGoaled = false
+	if p.NowPosition == distination {
+		isGoaled = true
 	}
-	return coodinate.Coodinate{}
+	return isGoaled
+}
+
+// 次のDistinationをSetする。最終目標地に到達した場合は、Actionを変更する。
+func (p *Person) SetNextDistination() {
+	isGoaled := p.PassedCount < len(DistinationListMap[p.LifeAction])-1
+	switch isGoaled {
+	case true:
+		p.setNextLifeAction()
+	case false:
+		p.PassedCount++
+	}
+}
+
+// 次のActionとDistinationをSetする。ActionがGoHomeでない場合（現在地がHomePositionでない場合）は、
+// StayイベントがGoHomeとなる。
+func (p *Person) setNextLifeAction() {
+	p.PassedCount = 0
+	nextLifeAction := GetRandomAction()
+	if p.LifeAction != GoHome && nextLifeAction == Stay {
+		nextLifeAction = GoHome
+	}
+	p.LifeAction = nextLifeAction
+	p.Distination = DistinationListMap[p.LifeAction][p.PassedCount]
 }
 
 // MapSize以上に移動しているかを判定する
-func collisionDetection(nextPosition coodinate.Coodinate, mapSize coodinate.Coodinate) bool {
+func collisionDetection(nextPosition Position, mapSize Position) bool {
 	collision := mapSize.X < nextPosition.X ||
 		mapSize.Y < nextPosition.Y ||
 		0 > nextPosition.X ||
@@ -70,10 +74,10 @@ func collisionDetection(nextPosition coodinate.Coodinate, mapSize coodinate.Cood
 	return collision
 }
 
-// 一定の確率で感染者と判定する。
+// Configで設定した確率で感染者と判定する。
 func (p *Person) InfectionJudge() InfectionStatus {
-	infectionThreshold := 0.1
-	if infectionThreshold > rand.Float64() {
+	infectionProbability := config.Config.InfectionProbability
+	if infectionProbability > rand.Float64() {
 		return Infection
 	}
 	return Health

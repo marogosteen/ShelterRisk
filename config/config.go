@@ -7,11 +7,12 @@ import (
 )
 
 type ConfigList struct {
-	MapSizeY      int
-	MapSizeX      int
-	PeopleCount   int
-	InfectedCount int
-	TimeInterval  int
+	MapSizeY             int
+	MapSizeX             int
+	PeopleCount          int
+	InfectedCount        int
+	TimeInterval         int
+	InfectionProbability float64
 }
 
 var Config ConfigList
@@ -24,10 +25,11 @@ func init() {
 	simulationSection := cfg.Section("Simulation")
 
 	Config = ConfigList{
-		MapSizeY:      simulationSection.Key("Y").MustInt(),
-		MapSizeX:      simulationSection.Key("X").MustInt(),
-		PeopleCount:   simulationSection.Key("People").MustInt(),
-		InfectedCount: simulationSection.Key("Infected").MustInt(),
-		TimeInterval:  simulationSection.Key("TimeInterval").MustInt(),
+		MapSizeY:             simulationSection.Key("Y").MustInt(),
+		MapSizeX:             simulationSection.Key("X").MustInt(),
+		PeopleCount:          simulationSection.Key("People").MustInt(),
+		InfectedCount:        simulationSection.Key("Infected").MustInt(),
+		TimeInterval:         simulationSection.Key("TimeInterval").MustInt(),
+		InfectionProbability: simulationSection.Key("InfectionProbability").MustFloat64(),
 	}
 }
