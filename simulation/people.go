@@ -14,13 +14,14 @@ func GeneratePeople(peopleCount int, infectedPersonCount int) []person.Person {
 		lifeAction := person.GetRandomAction()
 		distinationList := person.DistinationListMap[lifeAction]
 		people[id] = person.Person{
-			Id:              id,
-			HomePosition:    livingPosition,
-			NowPosition:     livingPosition,
-			Distination:     distinationList[0],
-			PassedCount:     0,
-			InfectionStatus: person.Health,
-			LifeAction:      lifeAction,
+			Id:                    id,
+			HomePosition:          livingPosition,
+			NowPosition:           livingPosition,
+			Distination:           distinationList[0],
+			PassedCount:           0,
+			InfectionStatus:       person.Health,
+			LifeAction:            lifeAction,
+			LifeActionElapsedTime: 0,
 		}
 	}
 	setInfected(people, infectedPersonCount)

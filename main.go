@@ -16,8 +16,10 @@ TODO
 	10人だと住居スペースが縦に並ぶ。
 	Stayの実装がまだ。
 		Stayの感染は、しない。させない。
-	Eatがまた
+	Eatがまた　Eatは絶対ホームに戻る
 	peopleのソースはSimulationに移すべき。
+	Simulation.PositionsMapの動作確認
+	散歩まだ
 */
 
 func main() {
@@ -30,7 +32,7 @@ func main() {
 		EndSec:  428400,
 		People:  simulation.GeneratePeople(config.PeopleCount, config.InfectedCount),
 	}
-	simulation.GymRun(config.TimeInterval)
+	simulation.Run(config.TimeInterval)
 
 	fmt.Printf("\nDone!\n")
 }

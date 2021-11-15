@@ -2,32 +2,11 @@ package person
 
 import (
 	"math/rand"
-
-	"example/OSURisk/config"
 )
 
 type Position struct {
 	Y int
 	X int
-}
-
-// 移動するLifeAction毎の目的地
-var DistinationListMap map[LifeAction][]Position
-
-func init() {
-	mapSizeX := config.Config.MapSizeX
-	mapSizeY := config.Config.MapSizeY
-
-	DistinationListMap = map[LifeAction][]Position{
-		CheckBoard:   {Position{Y: mapSizeY, X: mapSizeX}},
-		ChangeClthes: {Position{Y: mapSizeY / 2, X: mapSizeX}},
-		BathRoom:     {Position{Y: 0, X: mapSizeX}},
-		Eat: {
-			Position{Y: mapSizeY - 5, X: 0},
-			Position{Y: mapSizeY, X: 0},
-			Position{Y: mapSizeY, X: 5},
-		},
-	}
 }
 
 // TODO personに持たせたい

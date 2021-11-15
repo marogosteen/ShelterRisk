@@ -7,13 +7,34 @@ import (
 
 // 一人の人間を表現したStruct。
 type Person struct {
-	Id              int             // ID
-	NowPosition     Position        // 現在地
-	HomePosition    Position        // スタート地点
-	Distination     Position        // 目的地
-	PassedCount     int             // 目的地の通過数
-	InfectionStatus InfectionStatus // 感染状況
-	LifeAction      LifeAction      // 生活活動
+	Id                    int             // ID
+	NowPosition           Position        // 現在地
+	HomePosition          Position        // スタート地点
+	Distination           Position        // 目的地
+	PassedCount           int             // 目的地の通過数
+	InfectionStatus       InfectionStatus // 感染状況
+	LifeAction            LifeAction      // 生活活動
+	LifeActionElapsedTime int
+}
+
+func (p *Person) Stay(diffSec int) {
+	p.LifeActionElapsedTime += diffSec
+}
+
+func (p *Person) Stroll(diffSec int, mapSize Position) {
+	p.LifeActionElapsedTime += diffSec
+
+	var nextPosition Position
+	for {
+		// TODO Moveはこっちに移動したい
+		nextPosition = p.NowPosition.Move(p.Distination)
+		isCollision := collisionDetection(nextPosition, mapSize)
+		if !isCollision {
+			break
+		}
+	}
+
+	p.NowPosition = nextPosition
 }
 
 // TODO 指向性持たせたい
@@ -32,24 +53,37 @@ func (p *Person) Move(mapSize Position) {
 	p.NowPosition = nextPosition
 }
 
-// 目的地に到達したかをboolで返す
-func (p *Person) IsReach() (isReached bool) {
-	distination := DistinationListMap[p.LifeAction][p.PassedCount]
-	isReached = false
-	if p.NowPosition == distination {
-		isReached = true
+// LifeActionが完了したかをboolで返す
+func (p *Person) IsDone() (isDone bool) {
+	isDone = false
+	switch p.LifeAction {
+	case Stay, Stroll:
+		if p.LifeActionElapsedTime > NecessaryTimeMap[p.LifeAction] {
+			isDone = true
+		}
+	default:
+		distination := DistinationListMap[p.LifeAction][p.PassedCount]
+		if p.NowPosition == distination {
+			isDone = true
+		}
 	}
-	return isReached
+	return isDone
 }
 
 // 次のDistinationをSetする。最終目標地に到達した場合は、Actionを変更する。
 func (p *Person) SetNextDistination() {
-	isGoaled := p.PassedCount < len(DistinationListMap[p.LifeAction])-1
-	switch isGoaled {
-	case true:
+	p.PassedCount++
+
+	var isGoaled bool
+	switch p.LifeAction {
+	case Stay, Stroll:
+		isGoaled = true
+	default:
+		isGoaled = p.PassedCount == len(DistinationListMap[p.LifeAction])
+	}
+
+	if isGoaled {
 		p.setNextLifeAction()
-	case false:
-		p.PassedCount++
 	}
 }
 
@@ -57,6 +91,7 @@ func (p *Person) SetNextDistination() {
 // StayイベントがGoHomeとなる。
 func (p *Person) setNextLifeAction() {
 	p.PassedCount = 0
+	p.LifeActionElapsedTime = 0
 	nextLifeAction := GetRandomAction()
 	if p.LifeAction != GoHome && nextLifeAction == Stay {
 		nextLifeAction = GoHome
