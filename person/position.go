@@ -1,4 +1,4 @@
-package people
+package person
 
 import (
 	"math/rand"

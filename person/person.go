@@ -1,4 +1,4 @@
-package people
+package person
 
 import (
 	"example/OSURisk/config"
@@ -33,13 +33,13 @@ func (p *Person) Move(mapSize Position) {
 }
 
 // 目的地に到達したかをboolで返す
-func (p *Person) IsReach() (isGoaled bool) {
+func (p *Person) IsReach() (isReached bool) {
 	distination := DistinationListMap[p.LifeAction][p.PassedCount]
-	isGoaled = false
+	isReached = false
 	if p.NowPosition == distination {
-		isGoaled = true
+		isReached = true
 	}
-	return isGoaled
+	return isReached
 }
 
 // 次のDistinationをSetする。最終目標地に到達した場合は、Actionを変更する。

@@ -1,23 +1,25 @@
-package people
+package simulation
 
 import (
 	"math/rand"
+
+	"example/OSURisk/person"
 )
 
 // Configで指定された人数のpersonを生成し、スライスにする。
-func GeneratePeople(peopleCount int, infectedPersonCount int) []Person {
-	people := make([]Person, peopleCount)
+func GeneratePeople(peopleCount int, infectedPersonCount int) []person.Person {
+	people := make([]person.Person, peopleCount)
 	for id := 0; id < len(people); id++ {
 		livingPosition := getLivingPosition(peopleCount, id)
-		lifeAction := GetRandomAction()
-		distinationList := DistinationListMap[lifeAction]
-		people[id] = Person{
+		lifeAction := person.GetRandomAction()
+		distinationList := person.DistinationListMap[lifeAction]
+		people[id] = person.Person{
 			Id:              id,
 			HomePosition:    livingPosition,
 			NowPosition:     livingPosition,
 			Distination:     distinationList[0],
 			PassedCount:     0,
-			InfectionStatus: Health,
+			InfectionStatus: person.Health,
 			LifeAction:      lifeAction,
 		}
 	}
@@ -26,7 +28,7 @@ func GeneratePeople(peopleCount int, infectedPersonCount int) []Person {
 }
 
 // ランダムに指定された人数を感染者に変更する
-func setInfected(people []Person, infectedPersonCount int) {
+func setInfected(people []person.Person, infectedPersonCount int) {
 	// TODO 感染者数がシミュレーション人数より多い場合はエラー
 	// if len(p.PersonList) < infectedPersonCount{
 	// 	panic()
@@ -38,13 +40,13 @@ func setInfected(people []Person, infectedPersonCount int) {
 	for i := 0; i < infectedPersonCount; i++ {
 		idIndex := rand.Intn(len(idList))
 		id := idList[idIndex]
-		people[id].InfectionStatus = Infection
+		people[id].InfectionStatus = person.Infection
 		idList = append(idList[:idIndex], idList[idIndex+1:]...)
 	}
 }
 
 // TODO diviend < divisor のエラー処理
-func getLivingPosition(peopleCount int, personId int) Position {
+func getLivingPosition(peopleCount int, personId int) person.Position {
 	livingSpaceCapacity := 100
 	yLivingSpaceCapacity := livingSpaceCapacity / 10
 	xLivingSpaceCapacity := livingSpaceCapacity / yLivingSpaceCapacity
@@ -57,7 +59,7 @@ func getLivingPosition(peopleCount int, personId int) Position {
 	// 住居スペースが１マス２人であることを表現するために/2をした
 	livingPositionId /= 2
 
-	return Position{
+	return person.Position{
 		// 廊下スペースの表現するために*2をした
 		Y: livingPositionId / yLivingSpaceCapacity * 2,
 		X: livingPositionId % xLivingSpaceCapacity,

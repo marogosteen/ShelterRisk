@@ -1,9 +1,9 @@
-package people
+package person
 
 type InfectionStatus int
 
 const (
-	Health = iota
+	Health InfectionStatus = iota
 	Incubation
 	Infection
 )
