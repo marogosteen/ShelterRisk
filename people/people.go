@@ -1,41 +1,75 @@
 package people
 
-type People struct {
-	PeopleList []Person
+import (
+	"math/rand"
+)
+
+// Configで指定された人数のpersonを生成し、スライスにする。
+func GeneratePeople(peopleCount int, infectedPersonCount int) []Person {
+	people := make([]Person, peopleCount)
+	for id := 0; id < len(people); id++ {
+		livingPosition := getLivingPosition(peopleCount, id)
+		lifeAction := GetRandomAction()
+		distinationList := DistinationListMap[lifeAction]
+		people[id] = Person{
+			Id:              id,
+			HomePosition:    livingPosition,
+			NowPosition:     livingPosition,
+			Distination:     distinationList[0],
+			PassedCount:     0,
+			InfectionStatus: Health,
+			LifeAction:      lifeAction,
+		}
+	}
+	setInfected(people, infectedPersonCount)
+	return people
 }
 
-func NewPeople(peopleCount int) *People {
-	people := People{
-		PeopleList: make([]Person, peopleCount),
+// ランダムに指定された人数を感染者に変更する
+func setInfected(people []Person, infectedPersonCount int) {
+	// TODO 感染者数がシミュレーション人数より多い場合はエラー
+	// if len(p.PersonList) < infectedPersonCount{
+	// 	panic()
+	// }
+	var idList []int
+	for i := 0; i < len(people); i++ {
+		idList = append(idList, i)
 	}
-	for i := 0; i < 100; i++ {
-		people.PeopleList[i] = *NewPerson(i)
-	}
-	return &people
-}
-
-	func (LivingSpeace) {
-		var voo[][] int
-		
-
-	for i := 0; i < 5; i++ {
-		for j:=0; j<11; {
-			voo [i][j]=(i+2)+(j+2)
-	}
-	}
-		fmt.Prentln(voo)
-	}
-
-	//
-func (p *People) Move() {
-	for _, person := range p.PeopleList {
-		person.Move()
+	for i := 0; i < infectedPersonCount; i++ {
+		idIndex := rand.Intn(len(idList))
+		id := idList[idIndex]
+		people[id].InfectionStatus = Infection
+		idList = append(idList[:idIndex], idList[idIndex+1:]...)
 	}
 }
 
-// TODO IncubationからInfectionになるプログラム
-func (p *People) InfectionTest() {
-	for _, person := range p.PeopleList {
-		person.InfectionTest()
+// TODO diviend < divisor のエラー処理
+func getLivingPosition(peopleCount int, personId int) Position {
+	livingSpaceCapacity := 100
+	yLivingSpaceCapacity := livingSpaceCapacity / 10
+	xLivingSpaceCapacity := livingSpaceCapacity / yLivingSpaceCapacity
+	byDivisible := getByDivisible(livingSpaceCapacity, peopleCount)
+	whetherRemainder := personId / byDivisible
+	step := livingSpaceCapacity / byDivisible
+
+	livingPositionId := (personId-whetherRemainder*byDivisible)*step +
+		step/2*whetherRemainder
+	// 住居スペースが１マス２人であることを表現するために/2をした
+	livingPositionId /= 2
+
+	return Position{
+		// 廊下スペースの表現するために*2をした
+		Y: livingPositionId / yLivingSpaceCapacity * 2,
+		X: livingPositionId % xLivingSpaceCapacity,
 	}
+}
+
+// TODO diviend < divisor のエラー処理
+func getByDivisible(dividend int, divisor int) int {
+	for ; ; divisor-- {
+		if dividend%divisor == 0 {
+			break
+		}
+	}
+	return divisor
 }

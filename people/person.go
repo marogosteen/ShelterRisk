@@ -1,88 +1,84 @@
 package people
 
 import (
-	"fmt"
+	"example/OSURisk/config"
 	"math/rand"
 )
 
-type coodinate struct {
-	x int
-	y int
-}
-
-type infectionStatus struct {
-	Health     string // 健全
-	Incubation string // 潜伏期間
-	Infection  string // 感染
-}
-
-var foo = infectionStatus{
-	Health:     "Health",
-	Incubation: "Incubation",
-	Infection:  "Infection",
-}
-
+// 一人の人間を表現したStruct。
 type Person struct {
-	Id               int       // ID
-	CurrentCoodinate coodinate // 現在地
-	StartCoodinate   coodinate // スタート地点
-	EventelapsedTime int       // イベント経過時間
-	InfectionStatus  string    // 感染状況
+	Id              int             // ID
+	NowPosition     Position        // 現在地
+	HomePosition    Position        // スタート地点
+	Distination     Position        // 目的地
+	PassedCount     int             // 目的地の通過数
+	InfectionStatus InfectionStatus // 感染状況
+	LifeAction      LifeAction      // 生活活動
 }
 
-func NewPerson(inputId int) *Person {
-	coodinate := coodinate{x: 0, y: 1}
-	p := Person{
-		Id:               inputId,
-		CurrentCoodinate: coodinate,
-		StartCoodinate:   coodinate,
-		EventelapsedTime: 0,
-		InfectionStatus:  foo.Health,
-	}
-	return &p
-}
-
-func (p *Person) ShowPerson() {
-	fmt.Printf(
-		"ID: %v, CCy:%v, CCx:%v, SCy:%v, SCx:%v, EventTime:%v\n",
-		p.Id, p.CurrentCoodinate.y, p.CurrentCoodinate.x,
-		p.StartCoodinate.y, p.StartCoodinate.x, p.EventelapsedTime,
-	)
-}
-
-// TODO 壁判定
 // TODO 指向性持たせたい
-// TODO Simulation Mapを関与させたい
-// func (p *Person) Move(xMax int, yMax int) {
-func (p *Person) Move() {
-	x_direction := rand.Intn(2+1) - 1
-	y_direction := rand.Intn(2+1) - 1
-	if x_direction == 0 && y_direction == 0{
-		x_direction = rand.Intn(2+1) - 1
-		y_direction = rand.Intn(2+1) - 1
+// PersonのNowPositionをdistination方向に変化させる。
+func (p *Person) Move(mapSize Position) {
+	var nextPosition Position
+	for {
+		// TODO Moveはこっちに移動したい
+		nextPosition = p.NowPosition.Move(p.Distination)
+		isCollision := collisionDetection(nextPosition, mapSize)
+		if !isCollision {
+			break
+		}
 	}
 
-	p.CurrentCoodinate.x += rand.Intn(2+1) - 1
-	p.CurrentCoodinate.y += rand.Intn(2+1) - 1
+	p.NowPosition = nextPosition
 }
 
-// TODO IncubationからInfectionになるプログラム
-func (p *Person) InfectionTest() {
-	infectionThreshold := 0.1
-	if infectionThreshold > rand.Float64() {
-		p.InfectionStatus = foo.Incubation
+// 目的地に到達したかをboolで返す
+func (p *Person) IsReach() (isGoaled bool) {
+	distination := DistinationListMap[p.LifeAction][p.PassedCount]
+	isGoaled = false
+	if p.NowPosition == distination {
+		isGoaled = true
+	}
+	return isGoaled
+}
+
+// 次のDistinationをSetする。最終目標地に到達した場合は、Actionを変更する。
+func (p *Person) SetNextDistination() {
+	isGoaled := p.PassedCount < len(DistinationListMap[p.LifeAction])-1
+	switch isGoaled {
+	case true:
+		p.setNextLifeAction()
+	case false:
+		p.PassedCount++
 	}
 }
 
-// TODO ご飯は時間ベースでDecideする
-func (p *Person) EventDecide() {
-	
-	
-	//for i:=0; i<3; i++{
-		//
+// 次のActionとDistinationをSetする。ActionがGoHomeでない場合（現在地がHomePositionでない場合）は、
+// StayイベントがGoHomeとなる。
+func (p *Person) setNextLifeAction() {
+	p.PassedCount = 0
+	nextLifeAction := GetRandomAction()
+	if p.LifeAction != GoHome && nextLifeAction == Stay {
+		nextLifeAction = GoHome
 	}
-	//
-	
+	p.LifeAction = nextLifeAction
+	p.Distination = DistinationListMap[p.LifeAction][p.PassedCount]
+}
 
-	
+// MapSize以上に移動しているかを判定する
+func collisionDetection(nextPosition Position, mapSize Position) bool {
+	collision := mapSize.X < nextPosition.X ||
+		mapSize.Y < nextPosition.Y ||
+		0 > nextPosition.X ||
+		0 > nextPosition.Y
+	return collision
+}
 
+// Configで設定した確率で感染者と判定する。
+func (p *Person) InfectionJudge() InfectionStatus {
+	infectionProbability := config.Config.InfectionProbability
+	if infectionProbability > rand.Float64() {
+		return Infection
+	}
+	return Health
+}
