@@ -1,8 +1,9 @@
 package person
 
 import (
-	"example/OSURisk/config"
 	"math/rand"
+
+	"example/OSURisk/config"
 )
 
 // 一人の人間を表現したStruct。
@@ -17,40 +18,60 @@ type PersonModel struct {
 	LifeActionElapsedTime int
 }
 
+// diffSec分、personのLifeActionElapsedTimeを加算する。
 func (p *PersonModel) Stay(diffSec int) {
 	p.LifeActionElapsedTime += diffSec
 }
 
-func (p *PersonModel) Stroll(diffSec int, mapSize Position) {
+// ランダムでPerson.NowPositionを周囲８方に変える。1%の確率でp.NowPositionが変化しない。
+func (p *PersonModel) Stroll(diffSec int, mapSize Position) (nextPosition Position) {
 	p.LifeActionElapsedTime += diffSec
 
-	var nextPosition Position
-	for {
-		// TODO Moveはこっちに移動したい
-		nextPosition = p.NowPosition.Move(p.Distination)
-		isCollision := collisionDetection(nextPosition, mapSize)
-		if !isCollision {
-			break
-		}
+	if 0.01 > rand.Float32() {
+		return p.NowPosition
 	}
 
-	p.NowPosition = nextPosition
+	for {
+		var (
+			x_course int
+			y_course int
+		)
+
+		x_course = rand.Intn(2+1) - 1
+		y_course = rand.Intn(2+1) - 1
+		if x_course == 0 && y_course == 0 {
+			continue
+		}
+
+		nextPosition = Position{
+			X: p.NowPosition.X + x_course,
+			Y: p.NowPosition.Y + y_course,
+		}
+
+		isCollision := collisionDetection(nextPosition, mapSize)
+		if isCollision {
+			continue
+		}
+
+		break
+	}
+
+	return nextPosition
 }
 
 // TODO 指向性持たせたい
 // PersonのNowPositionをdistination方向に変化させる。
-func (p *PersonModel) Move(mapSize Position) {
-	var nextPosition Position
+func (p *PersonModel) Move(mapSize Position) (nextPosition Position) {
 	for {
-		// TODO Moveはこっちに移動したい
-		nextPosition = p.NowPosition.Move(p.Distination)
+		// TODO Move の実装
+		// nextPositon = hoge
 		isCollision := collisionDetection(nextPosition, mapSize)
 		if !isCollision {
 			break
 		}
 	}
 
-	p.NowPosition = nextPosition
+	return nextPosition
 }
 
 // LifeActionが完了したかをboolで返す
@@ -67,6 +88,7 @@ func (p *PersonModel) IsDone() (isDone bool) {
 			isDone = true
 		}
 	}
+
 	return isDone
 }
 

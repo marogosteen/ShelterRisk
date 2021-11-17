@@ -9,6 +9,7 @@ import (
 type ConfigList struct {
 	MapSizeY             int
 	MapSizeX             int
+	GridCapacity         int
 	PeopleCount          int
 	InfectedCount        int
 	TimeInterval         int
@@ -27,6 +28,7 @@ func init() {
 	Config = ConfigList{
 		MapSizeY:             simulationSection.Key("Y").MustInt(),
 		MapSizeX:             simulationSection.Key("X").MustInt(),
+		GridCapacity:         simulationSection.Key("GridCapacity").MustInt(),
 		PeopleCount:          simulationSection.Key("People").MustInt(),
 		InfectedCount:        simulationSection.Key("Infected").MustInt(),
 		TimeInterval:         simulationSection.Key("TimeInterval").MustInt(),

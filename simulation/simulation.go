@@ -3,40 +3,71 @@ package simulation
 import "example/OSURisk/person"
 
 type Simulation struct {
-	MapSize          person.Position
-	EndSec           int
-	People           []person.PersonModel
-	MoverPositionMap map[person.Position][]person.PersonModel
+	MapSize           person.Position
+	GridCapacity      int
+	EndSec            int
+	People            []person.PersonModel
+	MoversPositionMap map[person.Position][]person.PersonModel
 }
 
 func (s *Simulation) Run(diffSec int) {
 	s.MoversPositionMapInitialize()
-	MovementOrder := getMovementOder(len(s.People))
+	personOrder := getPersonOder(len(s.People))
 	for currentSec := 0; currentSec <= s.EndSec; currentSec += diffSec {
-		// TODO 渋滞と整列 優先車の表現
-		// for i, p := range s.People {
-		for _, id := range MovementOrder {
-			p := s.People[id]
-			if p.IsDone() {
-				p.SetNextDistination()
+		var (
+			nextPersonOder  []int
+			congestedPeople []int
+		)
+		congestedPeopleCount := 0
+
+		for {
+			for _, id := range personOrder {
+				p := s.People[id]
+				// 目的地に到達、次の目的地。
+				if p.IsDone() {
+					p.SetNextDistination()
+				}
+
+				// LifeActionに合わせた動作。
+				var nextPosition person.Position
+				switch p.LifeAction {
+				case person.Stay:
+					// TODO nextPosition返す?
+					p.Stay(diffSec)
+				case person.Stroll:
+					// nextPostion返す
+					nextPosition = p.Stroll(diffSec, s.MapSize)
+					// nextpostion返す
+				default:
+					nextPosition = p.Move(s.MapSize)
+				}
+
+				// 渋滞による移動制限。移動できなかった人の保存
+				if len(s.MoversPositionMap[p.NowPosition]) > s.GridCapacity {
+					nextPosition = p.NowPosition
+					congestedPeople = append(congestedPeople, p.Id)
+					continue
+				}
+
+				// 制限されなかったPerson.Idを処理。
+				nextPersonOder = append(nextPersonOder, p.Id)
+				// TODO s.MoversPositionMapのPopとAppend
+				s.People[id].NowPosition = nextPosition
+
 			}
 
-			switch p.LifeAction {
-			case person.Stay:
-				// person返す
-				p.Stay(diffSec)
-			case person.Stroll:
-				// person返す
-				p.Stroll(diffSec, s.MapSize)
-				// person返す
-			default:
-				p.Move(s.MapSize)
+			// 移動制限されたPersonの再移動。
+			if len(congestedPeople) != congestedPeopleCount {
+				personOrder = congestedPeople
+				continue
 			}
 
-			// err処理
-
-			s.People[id] = p
+			// TODO 動作確認
+			nextPersonOder = append(nextPersonOder, congestedPeople...)
+			personOrder = nextPersonOder
+			break
 		}
+
 		s.infectionJudge()
 	}
 }
@@ -49,7 +80,7 @@ func (s *Simulation) MoversPositionMapInitialize() {
 			positionsMap[p.NowPosition] = append(positionsMap[p.NowPosition], p)
 		}
 	}
-	s.MoverPositionMap = positionsMap
+	s.MoversPositionMap = positionsMap
 }
 
 /*
@@ -68,7 +99,7 @@ func (s *Simulation) infectionJudge() {
 		}
 	}
 
-	for position, people := range s.MoverPositionMap {
+	for position, people := range s.MoversPositionMap {
 		for _, p := range people {
 			// 同じ座標上にいる感染者数分の感染判定を行う。
 			for i := 0; i < infectedCountMap[position]; i++ {
@@ -82,7 +113,7 @@ func (s *Simulation) infectionJudge() {
 	}
 }
 
-func getMovementOder(personCount int) []int {
+func getPersonOder(personCount int) []int {
 	movementOder := make([]int, personCount)
 	for index := 0; index < len(movementOder); index++ {
 		movementOder[index] = index

@@ -12,25 +12,29 @@ import (
 
 /*
 TODO
-	1マス4人まだ
+	simu run MoversPositionMapの移動の表現
+	[]int...の動作確認
 	10人だと住居スペースが縦に並ぶ。
-	Stayの実装がまだ。
-		Stayの感染は、しない。させない。
-	Eatがまた　Eatは絶対ホームに戻る
-	peopleのソースはSimulationに移すべき。
+	Stayの感染は、しない。させない。
+	Moveまだ
+	Eatがまだ　Eatは絶対ホームに戻る
 	Simulation.PositionsMapの動作確認
-	散歩まだ
+	渋滞の表現。
+		Actionの目的地のindex0に渋滞者の現在地を追加する。
+		Moveは常に実行前に目的地をPassedでチェックする。
 */
 
 func main() {
 	var config = config.Config
 	rand.Seed(time.Now().Unix())
 
+	//simulationの設定
 	simulation := simulation.Simulation{
 		// TODO 11マス*11マス以下のmapSize指定はError吐くべきでは？
-		MapSize: person.Position{Y: config.MapSizeY, X: config.MapSizeX},
-		EndSec:  428400,
-		People:  simulation.GeneratePeople(config.PeopleCount, config.InfectedCount),
+		MapSize:      person.Position{Y: config.MapSizeY, X: config.MapSizeX},
+		GridCapacity: config.GridCapacity,
+		EndSec:       428400,
+		People:       simulation.GeneratePeople(config.PeopleCount, config.InfectedCount),
 	}
 	simulation.Run(config.TimeInterval)
 
