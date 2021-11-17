@@ -7,13 +7,13 @@ import (
 )
 
 // Configで指定された人数のpersonを生成し、スライスにする。
-func GeneratePeople(peopleCount int, infectedPersonCount int) []person.Person {
-	people := make([]person.Person, peopleCount)
+func GeneratePeople(peopleCount int, infectedPersonCount int) []person.PersonModel {
+	people := make([]person.PersonModel, peopleCount)
 	for id := 0; id < len(people); id++ {
 		livingPosition := getLivingPosition(peopleCount, id)
 		lifeAction := person.GetRandomAction()
 		distinationList := person.DistinationListMap[lifeAction]
-		people[id] = person.Person{
+		people[id] = person.PersonModel{
 			Id:                    id,
 			HomePosition:          livingPosition,
 			NowPosition:           livingPosition,
@@ -29,7 +29,7 @@ func GeneratePeople(peopleCount int, infectedPersonCount int) []person.Person {
 }
 
 // ランダムに指定された人数を感染者に変更する
-func setInfected(people []person.Person, infectedPersonCount int) {
+func setInfected(people []person.PersonModel, infectedPersonCount int) {
 	// TODO 感染者数がシミュレーション人数より多い場合はエラー
 	// if len(p.PersonList) < infectedPersonCount{
 	// 	panic()

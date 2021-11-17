@@ -6,7 +6,7 @@ import (
 )
 
 // 一人の人間を表現したStruct。
-type Person struct {
+type PersonModel struct {
 	Id                    int             // ID
 	NowPosition           Position        // 現在地
 	HomePosition          Position        // スタート地点
@@ -17,11 +17,11 @@ type Person struct {
 	LifeActionElapsedTime int
 }
 
-func (p *Person) Stay(diffSec int) {
+func (p *PersonModel) Stay(diffSec int) {
 	p.LifeActionElapsedTime += diffSec
 }
 
-func (p *Person) Stroll(diffSec int, mapSize Position) {
+func (p *PersonModel) Stroll(diffSec int, mapSize Position) {
 	p.LifeActionElapsedTime += diffSec
 
 	var nextPosition Position
@@ -39,7 +39,7 @@ func (p *Person) Stroll(diffSec int, mapSize Position) {
 
 // TODO 指向性持たせたい
 // PersonのNowPositionをdistination方向に変化させる。
-func (p *Person) Move(mapSize Position) {
+func (p *PersonModel) Move(mapSize Position) {
 	var nextPosition Position
 	for {
 		// TODO Moveはこっちに移動したい
@@ -54,7 +54,7 @@ func (p *Person) Move(mapSize Position) {
 }
 
 // LifeActionが完了したかをboolで返す
-func (p *Person) IsDone() (isDone bool) {
+func (p *PersonModel) IsDone() (isDone bool) {
 	isDone = false
 	switch p.LifeAction {
 	case Stay, Stroll:
@@ -71,7 +71,7 @@ func (p *Person) IsDone() (isDone bool) {
 }
 
 // 次のDistinationをSetする。最終目標地に到達した場合は、Actionを変更する。
-func (p *Person) SetNextDistination() {
+func (p *PersonModel) SetNextDistination() {
 	p.PassedCount++
 
 	var isGoaled bool
@@ -89,7 +89,7 @@ func (p *Person) SetNextDistination() {
 
 // 次のActionとDistinationをSetする。ActionがGoHomeでない場合（現在地がHomePositionでない場合）は、
 // StayイベントがGoHomeとなる。
-func (p *Person) setNextLifeAction() {
+func (p *PersonModel) setNextLifeAction() {
 	p.PassedCount = 0
 	p.LifeActionElapsedTime = 0
 	nextLifeAction := GetRandomAction()
@@ -110,7 +110,7 @@ func collisionDetection(nextPosition Position, mapSize Position) bool {
 }
 
 // Configで設定した確率で感染者と判定する。
-func (p *Person) InfectionJudge() InfectionStatus {
+func (p *PersonModel) InfectionJudge() InfectionStatus {
 	infectionProbability := config.Config.InfectionProbability
 	if infectionProbability > rand.Float64() {
 		return Infection
