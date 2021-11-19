@@ -63,8 +63,10 @@ func (p *PersonModel) Stroll(diffSec int, mapSize Position) (nextPosition Positi
 // PersonのNowPositionをdistination方向に変化させる。
 func (p *PersonModel) Move(mapSize Position) (nextPosition Position) {
 	for {
-		// TODO Move の実装
-		// nextPositon = hoge
+		nextPosition = Position{
+			Y: p.Distination.Y - p.NowPosition.Y,
+			X: p.Distination.X - p.NowPosition.X,
+		}
 		isCollision := collisionDetection(nextPosition, mapSize)
 		if !isCollision {
 			break
