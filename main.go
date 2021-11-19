@@ -5,42 +5,38 @@ import (
 	"math/rand"
 	"time"
 
-	"example/OSURisk/coodinate"
-	"example/OSURisk/people"
-	"example/OSURisk/simulations"
+	"example/OSURisk/config"
+	"example/OSURisk/person"
+	"example/OSURisk/simulation"
 )
 
+/*
+TODO
+	simu run MoversPositionMapの移動の表現
+	[]int...の動作確認
+	10人だと住居スペースが縦に並ぶ。
+	Stayの感染は、しない。させない。
+	Moveまだ
+	Eatがまだ　Eatは絶対ホームに戻る
+	Simulation.PositionsMapの動作確認
+	渋滞の表現。
+		Actionの目的地のindex0に渋滞者の現在地を追加する。
+		Moveは常に実行前に目的地をPassedでチェックする。
+*/
+
 func main() {
-	diffSec := 3
+	var config = config.Config
 	rand.Seed(time.Now().Unix())
 
-	// 3回/1日 実施 Map size (11マス*11マス) (20m*20m) 1800sec
-	diningSimulation := simulations.Simulation{
-		MapSize: coodinate.Coodinate{X: 11, Y: 11},
-		EndSec:  1800,
-		People:  people.GeneratePeople(100, 2),
+	//simulationの設定
+	simulation := simulation.Simulation{
+		// TODO 11マス*11マス以下のmapSize指定はError吐くべきでは？
+		MapSize:      person.Position{Y: config.MapSizeY, X: config.MapSizeX},
+		GridCapacity: config.GridCapacity,
+		EndSec:       428400,
+		People:       simulation.GeneratePeople(config.PeopleCount, config.InfectedCount),
 	}
-
-	// for _, person := range diningSimulation.People {
-	// 	fmt.Printf("%+v\n", person)
-	// }
-
-	//428400, //17時間×７日 (17hour × 60min × 60sec × 7days)
-
-	// diningSimulation := simulations.NewDiningSimulation(*people)
-	// for _, person := range diningSimulation.People.PersonList {
-	// 	fmt.Println(person)
-	// }
-	diningSimulation.Run(diffSec)
-	// simulations.NewGymSimulation()
-	infectionCount := 0
-	for _, person := range diningSimulation.People {
-		if person.InfectionStatus != people.EnumInfectionStatus.Health {
-			infectionCount++
-		}
-		fmt.Printf("%+v\n", person)
-	}
-	fmt.Println(infectionCount)
+	simulation.Run(config.TimeInterval)
 
 	fmt.Printf("\nDone!\n")
 }
