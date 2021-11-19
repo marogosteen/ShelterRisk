@@ -15,7 +15,7 @@ type PersonModel struct {
 	PassedCount           int             // 目的地の通過数
 	InfectionStatus       InfectionStatus // 感染状況
 	LifeAction            LifeAction      // 生活活動
-	LifeActionElapsedTime int
+	LifeActionElapsedTime int			//ライフアクションの経過時間
 }
 
 // diffSec分、personのLifeActionElapsedTimeを加算する。
