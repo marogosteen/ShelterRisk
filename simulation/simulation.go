@@ -37,23 +37,35 @@ func (s *Simulation) Run(diffSec int) {
 				case person.Stroll:
 					// nextPostion返す
 					nextPosition = p.Stroll(diffSec, s.MapSize)
-					// nextpostion返す
 				default:
+					// nextpostion返す
 					nextPosition = p.Move(s.MapSize)
 				}
 
-				// 渋滞による移動制限。移動できなかった人の保存
+				// こっから下Stayと移動者がごっちゃになってない？？
+
+				// Stay以外！
+				// 渋滞による移動制限。移動できなかったPersonは残しておき、再度移動させる
 				if len(s.MoversPositionMap[p.NowPosition]) > s.GridCapacity {
 					nextPosition = p.NowPosition
 					congestedPeople = append(congestedPeople, p.Id)
 					continue
 				}
 
+				// Stay含む!
 				// 制限されなかったPerson.Idを処理。
 				nextPersonOder = append(nextPersonOder, p.Id)
-				// TODO s.MoversPositionMapのPopとAppend
-				s.People[id].NowPosition = nextPosition
 
+				p.NowPosition = nextPosition
+				// TODO s.MoversPositionMapのPopとAppend　Moverのみ！
+				s.MoversPositionMap[p.NowPosition] = append(s.MoversPositionMap[p.NowPosition], p)
+				for index, bar := range s.MoversPositionMap[p.NowPosition] {
+					if bar.Id == p.Id {
+						s.MoversPositionMap[p.NowPosition] = append(s.MoversPositionMap[p.NowPosition][:index], s.MoversPositionMap[p.NowPosition][index+1:]...)
+						break
+					}
+				}
+				s.People[id] = p
 			}
 
 			// 移動制限されたPersonの再移動。
