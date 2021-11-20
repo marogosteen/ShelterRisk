@@ -87,7 +87,7 @@ func (p *PersonModel) Move(mapSize Position) (nextPosition Position) {
 			} else {
 				fuga = -1
 			}
-			nextPosition = Position{p.NowPosition.Y, p.NowPosition.X + fuga}
+			nextPosition = Position{p.NowPosition.Y + fuga, p.NowPosition.X}
 		} else {
 			var fuga int
 			if hogeX > 0 {
