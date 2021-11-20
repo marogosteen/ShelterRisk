@@ -75,7 +75,12 @@ func (p *PersonModel) Stroll(diffSec int, mapSize Position) (nextPosition Positi
 // TODO 指向性持たせたい
 // PersonのNowPositionをdistination方向に変化させる。
 func (p *PersonModel) Move(mapSize Position) (nextPosition Position) {
-	distination := DistinationListMap[p.LifeAction][p.PassedCount]
+	var distination Position
+	if p.LifeAction == GoHome {
+		distination = p.HomePosition
+	}else {
+		distination = getDistination(p)
+	}
 	for {
 		hogeY := distination.Y - p.NowPosition.Y
 		hogeX := distination.X - p.NowPosition.X
@@ -116,7 +121,7 @@ func (p *PersonModel) IsDone() (isDone bool) {
 			isDone = true
 		}
 	default:
-		distination := DistinationListMap[p.LifeAction][p.PassedCount]
+		distination := getDistination(p)
 		if p.NowPosition == distination {
 			isDone = true
 		}
@@ -134,7 +139,7 @@ func (p *PersonModel) SetNextDistination() {
 	case Stay, Stroll:
 		isGoaled = true
 	default:
-		isGoaled = p.PassedCount == len(DistinationListMap[p.LifeAction])
+		isGoaled = p.PassedCount == getPassedPoint(p)
 	}
 
 	if isGoaled {

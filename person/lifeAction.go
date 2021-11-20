@@ -1,7 +1,6 @@
 package person
 
 import (
-	"example/OSURisk/config"
 	"math/rand"
 )
 
@@ -32,8 +31,6 @@ const (
 // ランダムで決まるActionのMap。強制に設定させるEatやGobackは含まれない。
 var (
 	probabilityMap map[LifeAction]float32
-	// 移動するLifeAction毎の目的地
-	DistinationListMap map[LifeAction][]Position
 	NecessaryTimeMap   map[LifeAction]int
 )
 
@@ -45,20 +42,6 @@ func init() {
 		CheckBoard:   0.04,
 		ChangeClthes: 0.03,
 		BathRoom:     0.03,
-	}
-
-	mapSizeX := config.Config.MapSizeX
-	mapSizeY := config.Config.MapSizeY
-
-	DistinationListMap = map[LifeAction][]Position{
-		CheckBoard:   {Position{Y: mapSizeY, X: mapSizeX}},
-		ChangeClthes: {Position{Y: mapSizeY / 2, X: mapSizeX}},
-		BathRoom:     {Position{Y: 0, X: mapSizeX}},
-		Eat: {
-			Position{Y: mapSizeY - 5, X: 0},
-			Position{Y: mapSizeY, X: 0},
-			Position{Y: mapSizeY, X: 5},
-		},
 	}
 
 	NecessaryTimeMap = map[LifeAction]int{
