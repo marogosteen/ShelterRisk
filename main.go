@@ -15,7 +15,6 @@ TODO
 	simu run MoversPositionMapの移動の表現
 	[]int...の動作確認
 	10人だと住居スペースが縦に並ぶ。
-	Moveまだ
 	Eatがまだ　Eatは絶対ホームに戻る
 	Simulation.PositionsMapの動作確認
 	渋滞の表現。
@@ -23,6 +22,7 @@ TODO
 		Moveは常に実行前に目的地をPassedでチェックする。
 	LifeActionElapsedTimeのInitilizeがいるのでは？？
 	stay と　Strollは乱数で前後させたいな。
+	move 斜め移動
 */
 
 func main() {

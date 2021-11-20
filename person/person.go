@@ -78,7 +78,7 @@ func (p *PersonModel) Move(mapSize Position) (nextPosition Position) {
 	var distination Position
 	if p.LifeAction == GoHome {
 		distination = p.HomePosition
-	}else {
+	} else {
 		distination = getDistination(p)
 	}
 	for {
@@ -120,6 +120,10 @@ func (p *PersonModel) IsDone() (isDone bool) {
 		if p.LifeActionElapsedTime > NecessaryTimeMap[p.LifeAction] {
 			isDone = true
 		}
+	case GoHome:
+		if p.NowPosition == getDistination(p) {
+			isDone = true
+		}
 	default:
 		distination := getDistination(p)
 		if p.NowPosition == distination {
@@ -136,7 +140,7 @@ func (p *PersonModel) SetNextDistination() {
 
 	var isGoaled bool
 	switch p.LifeAction {
-	case Stay, Stroll:
+	case Stay, Stroll, GoHome:
 		isGoaled = true
 	default:
 		isGoaled = p.PassedCount == getPassedPoint(p)

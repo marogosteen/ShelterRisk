@@ -16,21 +16,25 @@ type Simulation struct {
 func (s *Simulation) Run(diffSec int) {
 	s.MoversPositionMapInitialize()
 	personOrder := getPersonOder(len(s.People))
+	hogecount := 1
 	for currentSec := 0; currentSec <= s.EndSec; currentSec += diffSec {
-		infectedcount := 0
-		for _, p := range s.People {
-			fmt.Printf("%+v,\n", p)
-			if p.InfectionStatus != person.Health {
-				infectedcount ++
+		if currentSec > hogecount*100000 {
+			infectedcount := 0
+			for _, p := range s.People {
+				fmt.Printf("%+v,\n", p)
+				if p.InfectionStatus != person.Health {
+					infectedcount++
+				}
 			}
+			movercount := 0
+			for _, pl := range s.MoversPositionMap {
+				movercount += len(pl)
+			}
+			fmt.Println("sec", currentSec)
+			fmt.Println("infectedcount", infectedcount)
+			fmt.Println("movercount", movercount)
+			hogecount++
 		}
-		movercount := 0
-		for _, pl := range s.MoversPositionMap {
-			movercount += len(pl)
-		}
-		fmt.Println("sec", currentSec)
-		fmt.Println("infectedcount", infectedcount)
-		fmt.Println("movercount", movercount)
 		var (
 			nextPersonOder  []int
 			congestedPeople []int
