@@ -1,6 +1,7 @@
 package person
 
 import (
+	"math"
 	"math/rand"
 
 	"example/OSURisk/config"
@@ -76,10 +77,27 @@ func (p *PersonModel) Stroll(diffSec int, mapSize Position) (nextPosition Positi
 func (p *PersonModel) Move(mapSize Position) (nextPosition Position) {
 	distination := DistinationListMap[p.LifeAction][p.PassedCount]
 	for {
-		nextPosition = Position{
-			Y: distination.Y - p.NowPosition.Y,
-			X: distination.X - p.NowPosition.X,
+		hogeY := distination.Y - p.NowPosition.Y
+		hogeX := distination.X - p.NowPosition.X
+
+		if int(math.Abs(float64(hogeY))) > int(math.Abs(float64(hogeX))) {
+			var fuga int
+			if hogeY > 0 {
+				fuga = 1
+			} else {
+				fuga = -1
+			}
+			nextPosition = Position{p.NowPosition.Y, p.NowPosition.X + fuga}
+		} else {
+			var fuga int
+			if hogeX > 0 {
+				fuga = 1
+			} else {
+				fuga = -1
+			}
+			nextPosition = Position{p.NowPosition.Y, p.NowPosition.X + fuga}
 		}
+
 		isCollision := collisionDetection(nextPosition, mapSize)
 		if !isCollision {
 			break

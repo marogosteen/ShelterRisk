@@ -18,8 +18,8 @@ func (s *Simulation) Run(diffSec int) {
 	personOrder := getPersonOder(len(s.People))
 	for currentSec := 0; currentSec <= s.EndSec; currentSec += diffSec {
 		fmt.Println("sec", currentSec)
-		for _, person := range s.People {
-			fmt.Printf("%+v,\n", person)
+		for _, p := range s.People {
+			fmt.Printf("%+v,\n", p)
 		}
 		var (
 			nextPersonOder  []int
@@ -49,9 +49,6 @@ func (s *Simulation) Run(diffSec int) {
 					nextPosition = p.Move(s.MapSize)
 				}
 
-				// こっから下Stayと移動者がごっちゃになってない？？
-
-				// Stay以外！
 				// 渋滞による移動制限。移動できなかったPersonは残しておき、再度移動させる
 				if len(s.MoversPositionMap[p.NowPosition]) > s.GridCapacity {
 					nextPosition = p.NowPosition
@@ -59,12 +56,10 @@ func (s *Simulation) Run(diffSec int) {
 					continue
 				}
 
-				// Stay含む!
 				// 制限されなかったPerson.Idを処理。
 				nextPersonOder = append(nextPersonOder, p.Id)
 
 				p.NowPosition = nextPosition
-				// TODO s.MoversPositionMapのPopとAppend　Moverのみ！
 				s.MoversPositionMap[p.NowPosition] = append(s.MoversPositionMap[p.NowPosition], p)
 				for index, bar := range s.MoversPositionMap[p.NowPosition] {
 					if bar.Id == p.Id {
