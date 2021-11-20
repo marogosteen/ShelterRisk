@@ -6,16 +6,27 @@ import (
 )
 
 // トイレや食事などの生活する上での活動を表現したEnum。
-type LifeAction int
+// type LifeAction int
+
+// const (
+// 	Stay LifeAction = iota
+// 	Stroll
+// 	CheckBoard
+// 	ChangeClthes
+// 	BathRoom
+// 	Eat
+// 	GoHome
+// )
+type LifeAction string
 
 const (
-	Stay LifeAction = iota
-	Stroll
-	CheckBoard
-	ChangeClthes
-	BathRoom
-	Eat
-	GoHome
+	Stay         LifeAction = "Stay"
+	Stroll       LifeAction = "Stroll"
+	CheckBoard   LifeAction = "CheckBoard"
+	ChangeClthes LifeAction = "ChangeClthes"
+	BathRoom     LifeAction = "BathRoom"
+	Eat          LifeAction = "Eat"
+	GoHome       LifeAction = "GoHome"
 )
 
 // ランダムで決まるActionのMap。強制に設定させるEatやGobackは含まれない。
@@ -57,14 +68,17 @@ func init() {
 }
 
 // probabilityMapからランダムにActionを決める。
-func GetRandomAction() LifeAction {
+func getRandomAction() LifeAction {
 	randNum := rand.Float32()
 	var actionProbability float32 = 0.0
 	var resultAction LifeAction
-	for action, value := range probabilityMap {
+	probabilityMapKey := []LifeAction{Stay, BathRoom, ChangeClthes, CheckBoard, Stroll}
+	for _, lifeAction := range probabilityMapKey {
+		value := probabilityMap[lifeAction]
 		actionProbability += value
 		if actionProbability > randNum {
-			resultAction = action
+			resultAction = lifeAction
+			break
 		}
 	}
 	return resultAction
