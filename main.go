@@ -21,6 +21,7 @@ TODO
 	渋滞の表現。
 		Actionの目的地のindex0に渋滞者の現在地を追加する。
 		Moveは常に実行前に目的地をPassedでチェックする。
+	LifeActionElapsedTimeのInitilizeがいるのでは？？
 */
 
 func main() {

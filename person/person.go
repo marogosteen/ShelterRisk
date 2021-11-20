@@ -11,11 +11,22 @@ type PersonModel struct {
 	Id                    int             // ID
 	NowPosition           Position        // 現在地
 	HomePosition          Position        // スタート地点
-	Distination           Position        // 目的地
+	// Distination           Position        // 目的地
 	PassedCount           int             // 目的地の通過数
 	InfectionStatus       InfectionStatus // 感染状況
 	LifeAction            LifeAction      // 生活活動
 	LifeActionElapsedTime int
+}
+
+func NewPerson(id int, homePosition Position) (p *PersonModel) {
+	p = &PersonModel{
+		Id:              id,
+		HomePosition:    homePosition,
+		NowPosition:     homePosition,
+		InfectionStatus: Health,
+	}
+	p.setNextLifeAction()
+	return p
 }
 
 // diffSec分、personのLifeActionElapsedTimeを加算する。
@@ -62,10 +73,11 @@ func (p *PersonModel) Stroll(diffSec int, mapSize Position) (nextPosition Positi
 // TODO 指向性持たせたい
 // PersonのNowPositionをdistination方向に変化させる。
 func (p *PersonModel) Move(mapSize Position) (nextPosition Position) {
+	distination := DistinationListMap[p.LifeAction][p.PassedCount]
 	for {
 		nextPosition = Position{
-			Y: p.Distination.Y - p.NowPosition.Y,
-			X: p.Distination.X - p.NowPosition.X,
+			Y: distination.Y - p.NowPosition.Y,
+			X: distination.X - p.NowPosition.X,
 		}
 		isCollision := collisionDetection(nextPosition, mapSize)
 		if !isCollision {
@@ -117,11 +129,11 @@ func (p *PersonModel) setNextLifeAction() {
 	p.PassedCount = 0
 	p.LifeActionElapsedTime = 0
 	nextLifeAction := GetRandomAction()
-	if p.LifeAction != GoHome && nextLifeAction == Stay {
+	if nextLifeAction == Stay && p.LifeAction != GoHome && p.LifeAction != Stay {
 		nextLifeAction = GoHome
 	}
 	p.LifeAction = nextLifeAction
-	p.Distination = DistinationListMap[p.LifeAction][p.PassedCount]
+	// p.Distination = DistinationListMap[p.LifeAction][p.PassedCount]
 }
 
 // MapSize以上に移動しているかを判定する

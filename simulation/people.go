@@ -11,18 +11,19 @@ func GeneratePeople(peopleCount int, infectedPersonCount int) []person.PersonMod
 	people := make([]person.PersonModel, peopleCount)
 	for id := 0; id < len(people); id++ {
 		homePosition := getLivingPosition(peopleCount, id)
-		lifeAction := person.GetRandomAction()
-		distinationList := person.DistinationListMap[lifeAction]
-		people[id] = person.PersonModel{
-			Id:                    id,
-			HomePosition:          homePosition,
-			NowPosition:           homePosition,
-			Distination:           distinationList[0],
-			PassedCount:           0,
-			InfectionStatus:       person.Health,
-			LifeAction:            lifeAction,
-			LifeActionElapsedTime: 0,
-		}
+		people[id] = *person.NewPerson(id, homePosition)
+		// lifeAction := person.GetRandomAction()
+		// distinationList := person.DistinationListMap[lifeAction]
+		// people[id] = person.PersonModel{
+		// 	Id:                    id,
+		// 	HomePosition:          homePosition,
+		// 	NowPosition:           homePosition,
+		// 	Distination:           distinationList[0],
+		// 	PassedCount:           0,
+		// 	InfectionStatus:       person.Health,
+		// 	LifeAction:            lifeAction,
+		// 	LifeActionElapsedTime: 0,
+		// }
 	}
 	setInfected(people, infectedPersonCount)
 	return people

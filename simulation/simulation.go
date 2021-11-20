@@ -1,6 +1,9 @@
 package simulation
 
-import "example/OSURisk/person"
+import (
+	"example/OSURisk/person"
+	"fmt"
+)
 
 type Simulation struct {
 	MapSize           person.Position
@@ -14,6 +17,10 @@ func (s *Simulation) Run(diffSec int) {
 	s.MoversPositionMapInitialize()
 	personOrder := getPersonOder(len(s.People))
 	for currentSec := 0; currentSec <= s.EndSec; currentSec += diffSec {
+		fmt.Println("sec", currentSec)
+		for _, person := range s.People {
+			fmt.Printf("%+v,\n", person)
+		}
 		var (
 			nextPersonOder  []int
 			congestedPeople []int
