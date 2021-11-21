@@ -201,7 +201,7 @@ func (s *Simulation) Run(diffSec int) {
 				}
 
 				// 渋滞による移動制限。移動できなかったPersonは残しておき、再度移動させる
-				if len(s.MoversPositionMap[p.NowPosition]) > s.GridCapacity {
+				if len(s.MoversPositionMap[p.NowPosition]) >= s.GridCapacity {
 					nextPosition = p.NowPosition
 					congestedPeople = append(congestedPeople, p.Id)
 					continue
@@ -231,6 +231,8 @@ func (s *Simulation) Run(diffSec int) {
 			// 移動制限されたPersonの再移動。
 			if len(congestedPeople) != congestedPeopleCount {
 				personOrder = congestedPeople
+				congestedPeopleCount = len(congestedPeople)
+				congestedPeople = nil
 				continue
 			}
 
