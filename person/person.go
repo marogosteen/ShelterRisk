@@ -81,6 +81,7 @@ func (p *PersonModel) Move(mapSize Position) (nextPosition Position) {
 	} else {
 		distination = getDistination(p)
 	}
+	// TODO homePosition.Xが０のやつコリジョンで無限入る。。。
 	for {
 		hogeY := distination.Y - p.NowPosition.Y
 		hogeX := distination.X - p.NowPosition.X

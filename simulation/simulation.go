@@ -14,11 +14,14 @@ type Simulation struct {
 }
 
 func (s *Simulation) Run(diffSec int) {
-	// new書くべきでは？？
+	// TODO new書くべきでは？？
 	s.MoversPositionMapInitialize()
 	personOrder := getPersonOder(len(s.People))
+
+	eatCount := 0
 	hogecount := 0
 	for currentSec := 0; currentSec <= s.EndSec; currentSec += diffSec {
+		day := currentSec / (3600 * 17)
 		if currentSec >= hogecount*100000 {
 			movercount2 := 0
 			infectedcount := 0
@@ -43,6 +46,131 @@ func (s *Simulation) Run(diffSec int) {
 			fmt.Println("movercount", movercount2)
 			hogecount++
 		}
+
+		if currentSec >= day*3600*17+(1*3600)+0 && eatCount == 0 {
+			fmt.Println(eatCount)
+			for index, p := range s.People[0*25 : 1*25] {
+				p.LifeAction = person.Eat
+				p.LifeActionElapsedTime = 0
+				p.PassedCount = 0
+				s.People[index] = p
+			}
+			eatCount++
+		} else if currentSec >= day*3600*17+(1*3600)+30 && eatCount == 1 {
+			fmt.Println(eatCount)
+			for index, p := range s.People[1*25 : 2*25] {
+				p.LifeAction = person.Eat
+				p.LifeActionElapsedTime = 0
+				p.PassedCount = 0
+				s.People[index] = p
+			}
+			eatCount++
+		} else if currentSec >= day*3600*17+(1*3600)+60 && eatCount == 2 {
+			fmt.Println(eatCount)
+
+			for index, p := range s.People[2*25 : 3*25] {
+				p.LifeAction = person.Eat
+				p.LifeActionElapsedTime = 0
+				p.PassedCount = 0
+				s.People[index] = p
+			}
+			eatCount++
+		} else if currentSec >= day*3600*17+(1*3600)+90 && eatCount == 3 {
+			fmt.Println(eatCount)
+
+			for index, p := range s.People[3*25 : 4*25] {
+				p.LifeAction = person.Eat
+				p.LifeActionElapsedTime = 0
+				p.PassedCount = 0
+				s.People[index] = p
+			}
+			eatCount++
+		} else if currentSec >= day*3600*17+(6*3600)+0 && eatCount == 4 {
+			fmt.Println(eatCount)
+
+			for index, p := range s.People[0*25 : 1*25] {
+				p.LifeAction = person.Eat
+				p.LifeActionElapsedTime = 0
+				p.PassedCount = 0
+				s.People[index] = p
+			}
+			eatCount++
+		} else if currentSec >= day*3600*17+(6*3600)+30 && eatCount == 5 {
+			fmt.Println(eatCount)
+
+			for index, p := range s.People[1*25 : 2*25] {
+				p.LifeAction = person.Eat
+				p.LifeActionElapsedTime = 0
+				p.PassedCount = 0
+				s.People[index] = p
+			}
+			eatCount++
+		} else if currentSec >= day*3600*17+(6*3600)+60 && eatCount == 6 {
+			fmt.Println(eatCount)
+
+			for index, p := range s.People[2*25 : 3*25] {
+				p.LifeAction = person.Eat
+				p.LifeActionElapsedTime = 0
+				p.PassedCount = 0
+				s.People[index] = p
+			}
+			eatCount++
+		} else if currentSec >= day*3600*17+(6*3600)+90 && eatCount == 7 {
+			fmt.Println(eatCount)
+
+			for index, p := range s.People[3*25 : 4*25] {
+				p.LifeAction = person.Eat
+				p.LifeActionElapsedTime = 0
+				p.PassedCount = 0
+				s.People[index] = p
+			}
+			eatCount++
+		} else if currentSec >= day*3600*17+(12*3600)+0 && eatCount == 8 {
+			fmt.Println(eatCount)
+
+			for index, p := range s.People[0*25 : 1*25] {
+				p.LifeAction = person.Eat
+				p.LifeActionElapsedTime = 0
+				p.PassedCount = 0
+				s.People[index] = p
+			}
+			eatCount++
+		} else if currentSec >= day*3600*17+(12*3600)+30 && eatCount == 9 {
+			fmt.Println(eatCount)
+
+			for index, p := range s.People[1*25 : 2*25] {
+				p.LifeAction = person.Eat
+				p.LifeActionElapsedTime = 0
+				p.PassedCount = 0
+				s.People[index] = p
+			}
+			eatCount++
+		} else if currentSec >= day*3600*17+(12*3600)+60 && eatCount == 10 {
+			fmt.Println(eatCount)
+
+			for index, p := range s.People[2*25 : 3*25] {
+				p.LifeAction = person.Eat
+				p.LifeActionElapsedTime = 0
+				p.PassedCount = 0
+				s.People[index] = p
+			}
+			eatCount++
+		} else if currentSec >= day*3600*17+(12*3600)+90 && eatCount == 11 {
+			fmt.Println(eatCount)
+
+			for index, p := range s.People[3*25 : 4*25] {
+				p.LifeAction = person.Eat
+				p.LifeActionElapsedTime = 0
+				p.PassedCount = 0
+				s.People[index] = p
+			}
+			eatCount++
+		} else if currentSec < day*3600*17+(1*3600)+0 && eatCount == 12 {
+			fmt.Println(eatCount)
+
+			eatCount = 0
+		}
+
 		var (
 			nextPersonOder  []int
 			congestedPeople []int
