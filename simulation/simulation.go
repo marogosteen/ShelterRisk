@@ -14,25 +14,33 @@ type Simulation struct {
 }
 
 func (s *Simulation) Run(diffSec int) {
+	// new書くべきでは？？
 	s.MoversPositionMapInitialize()
 	personOrder := getPersonOder(len(s.People))
-	hogecount := 1
+	hogecount := 0
 	for currentSec := 0; currentSec <= s.EndSec; currentSec += diffSec {
-		if currentSec > hogecount*100000 {
+		if currentSec >= hogecount*100000 {
+			movercount2 := 0
 			infectedcount := 0
 			for _, p := range s.People {
 				fmt.Printf("%+v,\n", p)
 				if p.InfectionStatus != person.Health {
 					infectedcount++
 				}
+				if p.LifeAction != person.Stay {
+					movercount2++
+				}
 			}
-			movercount := 0
+			movercount1 := 0
 			for _, pl := range s.MoversPositionMap {
-				movercount += len(pl)
+				movercount1 += len(pl)
+				fmt.Printf("\n%+v", pl)
 			}
+			fmt.Println()
 			fmt.Println("sec", currentSec)
 			fmt.Println("infectedcount", infectedcount)
-			fmt.Println("movercount", movercount)
+			fmt.Println("movercount", movercount1)
+			fmt.Println("movercount", movercount2)
 			hogecount++
 		}
 		var (
@@ -74,14 +82,21 @@ func (s *Simulation) Run(diffSec int) {
 				// 制限されなかったPerson.Idを処理。
 				nextPersonOder = append(nextPersonOder, p.Id)
 
-				p.NowPosition = nextPosition
-				s.MoversPositionMap[p.NowPosition] = append(s.MoversPositionMap[p.NowPosition], p)
 				for index, bar := range s.MoversPositionMap[p.NowPosition] {
 					if bar.Id == p.Id {
 						s.MoversPositionMap[p.NowPosition] = append(s.MoversPositionMap[p.NowPosition][:index], s.MoversPositionMap[p.NowPosition][index+1:]...)
+						if len(s.MoversPositionMap[p.NowPosition]) == 0 {
+							delete(s.MoversPositionMap, p.NowPosition)
+						}
 						break
 					}
 				}
+
+				p.NowPosition = nextPosition
+				if p.LifeAction != person.Stay {
+					s.MoversPositionMap[p.NowPosition] = append(s.MoversPositionMap[p.NowPosition], p)
+				}
+
 				s.People[id] = p
 			}
 
@@ -99,6 +114,20 @@ func (s *Simulation) Run(diffSec int) {
 
 		s.infectionJudge()
 	}
+
+	infectedcount := 0
+	for _, p := range s.People {
+		fmt.Printf("%+v,\n", p)
+		if p.InfectionStatus != person.Health {
+			infectedcount++
+		}
+	}
+	movercount := 0
+	for _, pl := range s.MoversPositionMap {
+		movercount += len(pl)
+	}
+	fmt.Println("infectedcount", infectedcount)
+	fmt.Println("movercount", movercount)
 }
 
 // LifeActionがStay以外のPersonのみ保持する

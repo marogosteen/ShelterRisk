@@ -122,6 +122,10 @@ func (p *PersonModel) IsDone() (isDone bool) {
 		}
 	case GoHome:
 		if p.NowPosition == getDistination(p) {
+			if p.HomePosition.X == 0 {
+				// Debug
+				isDone = true
+			}
 			isDone = true
 		}
 	default:
