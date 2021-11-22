@@ -35,134 +35,134 @@ func (s *Simulation) Run(diffSec int) {
 				}
 			}
 			movercount1 := 0
-			for _, pl := range s.MoversPositionMap {
+			for key, pl := range s.MoversPositionMap {
 				movercount1 += len(pl)
-				fmt.Printf("\n%+v", pl)
+				fmt.Printf("%v %+v\n", key, pl)
 			}
 			fmt.Println()
 			fmt.Println("sec", currentSec)
 			fmt.Println("infectedcount", infectedcount)
 			fmt.Println("movercount", movercount1)
-			fmt.Println("movercount", movercount2)
+			fmt.Println("movercount2", movercount2)
 			hogecount++
 		}
 
 		if currentSec >= day*3600*17+(1*3600)+0 && eatCount == 0 {
 			fmt.Println(eatCount)
-			for index, p := range s.People[0*25 : 1*25] {
+			for _, p := range s.People[0*25 : 1*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
 				p.PassedCount = 0
-				s.People[index] = p
+				s.People[p.Id] = p
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(1*3600)+30 && eatCount == 1 {
 			fmt.Println(eatCount)
-			for index, p := range s.People[1*25 : 2*25] {
+			for _, p := range s.People[1*25 : 2*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
 				p.PassedCount = 0
-				s.People[index] = p
+				s.People[p.Id] = p
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(1*3600)+60 && eatCount == 2 {
 			fmt.Println(eatCount)
 
-			for index, p := range s.People[2*25 : 3*25] {
+			for _, p := range s.People[2*25 : 3*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
 				p.PassedCount = 0
-				s.People[index] = p
+				s.People[p.Id] = p
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(1*3600)+90 && eatCount == 3 {
 			fmt.Println(eatCount)
 
-			for index, p := range s.People[3*25 : 4*25] {
+			for _, p := range s.People[3*25 : 4*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
 				p.PassedCount = 0
-				s.People[index] = p
+				s.People[p.Id] = p
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(6*3600)+0 && eatCount == 4 {
 			fmt.Println(eatCount)
 
-			for index, p := range s.People[0*25 : 1*25] {
+			for _, p := range s.People[0*25 : 1*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
 				p.PassedCount = 0
-				s.People[index] = p
+				s.People[p.Id] = p
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(6*3600)+30 && eatCount == 5 {
 			fmt.Println(eatCount)
 
-			for index, p := range s.People[1*25 : 2*25] {
+			for _, p := range s.People[1*25 : 2*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
 				p.PassedCount = 0
-				s.People[index] = p
+				s.People[p.Id] = p
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(6*3600)+60 && eatCount == 6 {
 			fmt.Println(eatCount)
 
-			for index, p := range s.People[2*25 : 3*25] {
+			for _, p := range s.People[2*25 : 3*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
 				p.PassedCount = 0
-				s.People[index] = p
+				s.People[p.Id] = p
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(6*3600)+90 && eatCount == 7 {
 			fmt.Println(eatCount)
 
-			for index, p := range s.People[3*25 : 4*25] {
+			for _, p := range s.People[3*25 : 4*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
 				p.PassedCount = 0
-				s.People[index] = p
+				s.People[p.Id] = p
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(12*3600)+0 && eatCount == 8 {
 			fmt.Println(eatCount)
 
-			for index, p := range s.People[0*25 : 1*25] {
+			for _, p := range s.People[0*25 : 1*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
 				p.PassedCount = 0
-				s.People[index] = p
+				s.People[p.Id] = p
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(12*3600)+30 && eatCount == 9 {
 			fmt.Println(eatCount)
 
-			for index, p := range s.People[1*25 : 2*25] {
+			for _, p := range s.People[1*25 : 2*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
 				p.PassedCount = 0
-				s.People[index] = p
+				s.People[p.Id] = p
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(12*3600)+60 && eatCount == 10 {
 			fmt.Println(eatCount)
 
-			for index, p := range s.People[2*25 : 3*25] {
+			for _, p := range s.People[2*25 : 3*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
 				p.PassedCount = 0
-				s.People[index] = p
+				s.People[p.Id] = p
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(12*3600)+90 && eatCount == 11 {
 			fmt.Println(eatCount)
 
-			for index, p := range s.People[3*25 : 4*25] {
+			for _, p := range s.People[3*25 : 4*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
 				p.PassedCount = 0
-				s.People[index] = p
+				s.People[p.Id] = p
 			}
 			eatCount++
 		} else if currentSec < day*3600*17+(1*3600)+0 && eatCount == 12 {
@@ -245,19 +245,26 @@ func (s *Simulation) Run(diffSec int) {
 		s.infectionJudge()
 	}
 
+	movercount2 := 0
 	infectedcount := 0
 	for _, p := range s.People {
 		fmt.Printf("%+v,\n", p)
 		if p.InfectionStatus != person.Health {
 			infectedcount++
 		}
+		if p.LifeAction != person.Stay {
+			movercount2++
+		}
 	}
-	movercount := 0
-	for _, pl := range s.MoversPositionMap {
-		movercount += len(pl)
+	movercount1 := 0
+	for key, pl := range s.MoversPositionMap {
+		movercount1 += len(pl)
+		fmt.Printf("%v %+v\n", key, pl)
 	}
+	fmt.Println()
 	fmt.Println("infectedcount", infectedcount)
-	fmt.Println("movercount", movercount)
+	fmt.Println("movercount", movercount1)
+	fmt.Println("movercount2", movercount2)
 }
 
 // LifeActionがStay以外のPersonのみ保持する
