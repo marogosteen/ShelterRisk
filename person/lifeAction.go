@@ -37,9 +37,9 @@ var (
 func init() {
 	// ランダムで決まるActionのそれぞれの確率
 	probabilityMap = map[LifeAction]float32{
-		Stay:         0.87,
+		Stay:         0.89,
 		Stroll:       0.03,
-		CheckBoard:   0.04,
+		CheckBoard:   0.02,
 		ChangeClthes: 0.03,
 		BathRoom:     0.03,
 	}
