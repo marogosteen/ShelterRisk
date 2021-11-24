@@ -1,8 +1,9 @@
 package simulation
 
 import (
-	"example/OSURisk/person"
 	"fmt"
+
+	"example/OSURisk/person"
 )
 
 type Simulation struct {
@@ -189,19 +190,17 @@ func (s *Simulation) Run(diffSec int) {
 				var nextPosition person.Position
 				switch p.LifeAction {
 				case person.Stay:
-					// TODO nextPosition返す?
 					p.Stay(diffSec)
 					nextPosition = p.NowPosition
 				case person.Stroll:
-					// nextPostion返す
 					nextPosition = p.Stroll(diffSec, s.MapSize)
 				default:
-					// nextpostion返す
 					nextPosition = p.Move(s.MapSize)
 				}
 
 				// 渋滞による移動制限。移動できなかったPersonは残しておき、再度移動させる
-				if len(s.MoversPositionMap[p.NowPosition]) >= s.GridCapacity {
+				if len(s.MoversPositionMap[nextPosition]) >= s.GridCapacity && p.LifeAction != person.Stay{
+					// fmt.Printf("len:%v\nposition:%v\n", len(s.MoversPositionMap[nextPosition]), nextPosition)
 					nextPosition = p.NowPosition
 					congestedPeople = append(congestedPeople, p.Id)
 					continue
