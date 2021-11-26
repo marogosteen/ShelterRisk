@@ -20,36 +20,37 @@ func (s *Simulation) Run(diffSec int) {
 	personOrder := getPersonOder(len(s.People))
 
 	eatCount := 0
-	hogecount := 0
+	// hogecount := 0
 	for currentSec := 0; currentSec <= s.EndSec; currentSec += diffSec {
 		day := currentSec / (3600 * 17)
-		if currentSec >= hogecount*100000 {
-			movercount2 := 0
-			infectedcount := 0
-			for _, p := range s.People {
-				fmt.Printf("%+v,\n", p)
-				if p.InfectionStatus != person.Health {
-					infectedcount++
+		/*
+			if currentSec >= hogecount*100000 {
+				movercount2 := 0
+				infectedcount := 0
+				for _, p := range s.People {
+					fmt.Printf("%+v,\n", p)
+					if p.InfectionStatus != person.Health {
+						infectedcount++
+					}
+					if p.LifeAction != person.Stay {
+						movercount2++
+					}
 				}
-				if p.LifeAction != person.Stay {
-					movercount2++
+				movercount1 := 0
+				for key, pl := range s.MoversPositionMap {
+					movercount1 += len(pl)
+					fmt.Printf("%v %+v\n", key, pl)
 				}
+				fmt.Println()
+				fmt.Println("sec", currentSec)
+				fmt.Println("infectedcount", infectedcount)
+				fmt.Println("movercount", movercount1)
+				fmt.Println("movercount2", movercount2)
+				hogecount++
 			}
-			movercount1 := 0
-			for key, pl := range s.MoversPositionMap {
-				movercount1 += len(pl)
-				fmt.Printf("%v %+v\n", key, pl)
-			}
-			fmt.Println()
-			fmt.Println("sec", currentSec)
-			fmt.Println("infectedcount", infectedcount)
-			fmt.Println("movercount", movercount1)
-			fmt.Println("movercount2", movercount2)
-			hogecount++
-		}
+		*/
 
 		if currentSec >= day*3600*17+(1*3600)+0 && eatCount == 0 {
-			fmt.Println(eatCount)
 			for _, p := range s.People[0*25 : 1*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -58,7 +59,6 @@ func (s *Simulation) Run(diffSec int) {
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(1*3600)+30 && eatCount == 1 {
-			fmt.Println(eatCount)
 			for _, p := range s.People[1*25 : 2*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -67,8 +67,6 @@ func (s *Simulation) Run(diffSec int) {
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(1*3600)+60 && eatCount == 2 {
-			fmt.Println(eatCount)
-
 			for _, p := range s.People[2*25 : 3*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -77,8 +75,6 @@ func (s *Simulation) Run(diffSec int) {
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(1*3600)+90 && eatCount == 3 {
-			fmt.Println(eatCount)
-
 			for _, p := range s.People[3*25 : 4*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -87,8 +83,6 @@ func (s *Simulation) Run(diffSec int) {
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(6*3600)+0 && eatCount == 4 {
-			fmt.Println(eatCount)
-
 			for _, p := range s.People[0*25 : 1*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -97,8 +91,6 @@ func (s *Simulation) Run(diffSec int) {
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(6*3600)+30 && eatCount == 5 {
-			fmt.Println(eatCount)
-
 			for _, p := range s.People[1*25 : 2*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -107,8 +99,6 @@ func (s *Simulation) Run(diffSec int) {
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(6*3600)+60 && eatCount == 6 {
-			fmt.Println(eatCount)
-
 			for _, p := range s.People[2*25 : 3*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -117,8 +107,6 @@ func (s *Simulation) Run(diffSec int) {
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(6*3600)+90 && eatCount == 7 {
-			fmt.Println(eatCount)
-
 			for _, p := range s.People[3*25 : 4*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -127,8 +115,6 @@ func (s *Simulation) Run(diffSec int) {
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(12*3600)+0 && eatCount == 8 {
-			fmt.Println(eatCount)
-
 			for _, p := range s.People[0*25 : 1*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -137,8 +123,6 @@ func (s *Simulation) Run(diffSec int) {
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(12*3600)+30 && eatCount == 9 {
-			fmt.Println(eatCount)
-
 			for _, p := range s.People[1*25 : 2*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -147,8 +131,6 @@ func (s *Simulation) Run(diffSec int) {
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(12*3600)+60 && eatCount == 10 {
-			fmt.Println(eatCount)
-
 			for _, p := range s.People[2*25 : 3*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -157,8 +139,6 @@ func (s *Simulation) Run(diffSec int) {
 			}
 			eatCount++
 		} else if currentSec >= day*3600*17+(12*3600)+90 && eatCount == 11 {
-			fmt.Println(eatCount)
-
 			for _, p := range s.People[3*25 : 4*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -167,8 +147,6 @@ func (s *Simulation) Run(diffSec int) {
 			}
 			eatCount++
 		} else if currentSec < day*3600*17+(1*3600)+0 && eatCount == 12 {
-			fmt.Println(eatCount)
-
 			eatCount = 0
 		}
 
@@ -181,9 +159,23 @@ func (s *Simulation) Run(diffSec int) {
 		for {
 			for _, id := range personOrder {
 				p := s.People[id]
+				// TODO 後で消す
+				// if p.NowPosition == p.HomePosition && p.LifeAction == person.GoHome && p.HomePosition.X == 0 && p.NowPosition.X == 0 {
+				// 	fmt.Printf("%v %+v\n", p.IsDone(), p)
+				// 	if !p.IsDone() {
+				// 		fmt.Println("\n\n\n\n\n\n\n\n\n\n\n\n")
+				// 	}
+				// }
+
 				// 目的地に到達、次の目的地。
 				if p.IsDone() {
 					p.SetNextDistination()
+
+					// TODO 後で消す
+					if p.NowPosition == p.HomePosition && p.LifeAction == person.GoHome && p.HomePosition.X == 0 && p.NowPosition.X == 0 {
+						fmt.Printf("%v %+v\n", p.IsDone(), p)
+					}
+
 				}
 
 				// LifeActionに合わせた動作。
@@ -199,7 +191,7 @@ func (s *Simulation) Run(diffSec int) {
 				}
 
 				// 渋滞による移動制限。移動できなかったPersonは残しておき、再度移動させる
-				if len(s.MoversPositionMap[nextPosition]) >= s.GridCapacity && p.LifeAction != person.Stay{
+				if len(s.MoversPositionMap[nextPosition]) >= s.GridCapacity && p.LifeAction != person.Stay {
 					// fmt.Printf("len:%v\nposition:%v\n", len(s.MoversPositionMap[nextPosition]), nextPosition)
 					nextPosition = p.NowPosition
 					congestedPeople = append(congestedPeople, p.Id)
