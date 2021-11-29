@@ -59,7 +59,7 @@ func getLivingPosition(peopleCount int, personId int) person.Position {
 	livingPositionId := (personId-whetherRemainder*byDivisible)*step +
 		step/2*whetherRemainder
 	// 住居スペースが１マス２人であることを表現するために/2をした
-	livingPositionId /= 2
+	livingPositionId /= 1
 
 	return person.Position{
 		// 廊下スペースの表現するために*2をした
