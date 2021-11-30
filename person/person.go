@@ -81,6 +81,7 @@ func (p *PersonModel) Move(mapSize Position) (nextPosition Position) {
 	} else {
 		distination = getDistination(p)
 	}
+	// TODO homePosition.Xが０のやつコリジョンで無限入る。。。
 	for {
 		hogeY := distination.Y - p.NowPosition.Y
 		hogeX := distination.X - p.NowPosition.X
@@ -122,6 +123,10 @@ func (p *PersonModel) IsDone() (isDone bool) {
 		}
 	case GoHome:
 		if p.NowPosition == getDistination(p) {
+			if p.HomePosition.X == 0 {
+				// Debug
+				isDone = true
+			}
 			isDone = true
 		}
 	default:
@@ -157,7 +162,13 @@ func (p *PersonModel) setNextLifeAction() {
 	p.PassedCount = 0
 	p.LifeActionElapsedTime = 0
 	nextLifeAction := getRandomAction()
-	if nextLifeAction == Stay && p.LifeAction != GoHome && p.LifeAction != Stay {
+	if nextLifeAction == Stay && p.NowPosition != p.HomePosition {
+
+		// TODO 後で消す
+		if p.NowPosition == p.HomePosition && p.HomePosition.X == 0 && p.NowPosition.X == 0 {
+			nextLifeAction = GoHome
+		}
+
 		nextLifeAction = GoHome
 	}
 	p.LifeAction = nextLifeAction
