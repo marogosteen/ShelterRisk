@@ -1,9 +1,16 @@
 package person
 
-type InfectionStatus int
+// type InfectionStatus int
+
+// const (
+// 	Health InfectionStatus = iota
+// 	Incubation
+// 	Infection
+// )
+type InfectionStatus string
 
 const (
-	Health InfectionStatus = iota
-	Incubation
-	Infection
+	Health     InfectionStatus = "Healt"
+	Incubation InfectionStatus = "Incubation"
+	Infection  InfectionStatus = "Infection"
 )

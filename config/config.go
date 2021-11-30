@@ -26,8 +26,8 @@ func init() {
 	simulationSection := cfg.Section("Simulation")
 
 	Config = ConfigList{
-		MapSizeY:             simulationSection.Key("Y").MustInt(),
-		MapSizeX:             simulationSection.Key("X").MustInt(),
+		MapSizeY:             simulationSection.Key("MapSizeY").MustInt(),
+		MapSizeX:             simulationSection.Key("MapSizeX").MustInt(),
 		GridCapacity:         simulationSection.Key("GridCapacity").MustInt(),
 		PeopleCount:          simulationSection.Key("People").MustInt(),
 		InfectedCount:        simulationSection.Key("Infected").MustInt(),

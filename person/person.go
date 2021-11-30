@@ -1,6 +1,7 @@
 package person
 
 import (
+	"math"
 	"math/rand"
 
 	"example/OSURisk/config"
@@ -8,14 +9,26 @@ import (
 
 // 一人の人間を表現したStruct。
 type PersonModel struct {
-	Id                    int             // ID
-	NowPosition           Position        // 現在地
-	HomePosition          Position        // スタート地点
-	Distination           Position        // 目的地
+	Id           int      // ID
+	NowPosition  Position // 現在地
+	HomePosition Position // スタート地点
+	// Distination           Position        // 目的地
 	PassedCount           int             // 目的地の通過数
 	InfectionStatus       InfectionStatus // 感染状況
 	LifeAction            LifeAction      // 生活活動
 	LifeActionElapsedTime int			//ライフアクションの経過時間
+}
+
+func NewPerson(id int, homePosition Position) (p *PersonModel) {
+	p = &PersonModel{
+		Id:              id,
+		HomePosition:    homePosition,
+		NowPosition:     homePosition,
+		InfectionStatus: Health,
+		LifeAction:      Stay,
+	}
+	p.setNextLifeAction()
+	return p
 }
 
 // diffSec分、personのLifeActionElapsedTimeを加算する。
@@ -62,9 +75,35 @@ func (p *PersonModel) Stroll(diffSec int, mapSize Position) (nextPosition Positi
 // TODO 指向性持たせたい
 // PersonのNowPositionをdistination方向に変化させる。
 func (p *PersonModel) Move(mapSize Position) (nextPosition Position) {
+	var distination Position
+	if p.LifeAction == GoHome {
+		distination = p.HomePosition
+	} else {
+		distination = getDistination(p)
+	}
+	// TODO homePosition.Xが０のやつコリジョンで無限入る。。。
 	for {
-		// TODO Move の実装
-		// nextPositon = hoge
+		hogeY := distination.Y - p.NowPosition.Y
+		hogeX := distination.X - p.NowPosition.X
+
+		if int(math.Abs(float64(hogeY))) > int(math.Abs(float64(hogeX))) {
+			var fuga int
+			if hogeY > 0 {
+				fuga = 1
+			} else {
+				fuga = -1
+			}
+			nextPosition = Position{p.NowPosition.Y + fuga, p.NowPosition.X}
+		} else {
+			var fuga int
+			if hogeX > 0 {
+				fuga = 1
+			} else {
+				fuga = -1
+			}
+			nextPosition = Position{p.NowPosition.Y, p.NowPosition.X + fuga}
+		}
+
 		isCollision := collisionDetection(nextPosition, mapSize)
 		if !isCollision {
 			break
@@ -82,8 +121,16 @@ func (p *PersonModel) IsDone() (isDone bool) {
 		if p.LifeActionElapsedTime > NecessaryTimeMap[p.LifeAction] {
 			isDone = true
 		}
+	case GoHome:
+		if p.NowPosition == getDistination(p) {
+			if p.HomePosition.X == 0 {
+				// Debug
+				isDone = true
+			}
+			isDone = true
+		}
 	default:
-		distination := DistinationListMap[p.LifeAction][p.PassedCount]
+		distination := getDistination(p)
 		if p.NowPosition == distination {
 			isDone = true
 		}
@@ -98,10 +145,10 @@ func (p *PersonModel) SetNextDistination() {
 
 	var isGoaled bool
 	switch p.LifeAction {
-	case Stay, Stroll:
+	case Stay, Stroll, GoHome:
 		isGoaled = true
 	default:
-		isGoaled = p.PassedCount == len(DistinationListMap[p.LifeAction])
+		isGoaled = p.PassedCount == getPassedPoint(p)
 	}
 
 	if isGoaled {
@@ -114,12 +161,18 @@ func (p *PersonModel) SetNextDistination() {
 func (p *PersonModel) setNextLifeAction() {
 	p.PassedCount = 0
 	p.LifeActionElapsedTime = 0
-	nextLifeAction := GetRandomAction()
-	if p.LifeAction != GoHome && nextLifeAction == Stay {
+	nextLifeAction := getRandomAction()
+	if nextLifeAction == Stay && p.NowPosition != p.HomePosition {
+
+		// TODO 後で消す
+		if p.NowPosition == p.HomePosition && p.HomePosition.X == 0 && p.NowPosition.X == 0 {
+			nextLifeAction = GoHome
+		}
+
 		nextLifeAction = GoHome
 	}
 	p.LifeAction = nextLifeAction
-	p.Distination = DistinationListMap[p.LifeAction][p.PassedCount]
+	// p.Distination = DistinationListMap[p.LifeAction][p.PassedCount]
 }
 
 // MapSize以上に移動しているかを判定する
