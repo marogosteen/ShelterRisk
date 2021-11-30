@@ -20,10 +20,10 @@ func (s *Simulation) Run(diffSec int) {
 	personOrder := getPersonOder(len(s.People))
 
 	eatCount := 0
-	// hogecount := 0
+	hogecount := 0
 	for currentSec := 0; currentSec <= s.EndSec; currentSec += diffSec {
 		day := currentSec / (3600 * 17)
-		/*
+		
 			if currentSec >= hogecount*100000 {
 				movercount2 := 0
 				infectedcount := 0
@@ -48,7 +48,7 @@ func (s *Simulation) Run(diffSec int) {
 				fmt.Println("movercount2", movercount2)
 				hogecount++
 			}
-		*/
+		
 
 		if currentSec >= day*3600*17+(1*3600)+0 && eatCount == 0 {
 			for _, p := range s.People[0*25 : 1*25] {
@@ -58,7 +58,7 @@ func (s *Simulation) Run(diffSec int) {
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(1*3600)+30 && eatCount == 1 {
+		} else if currentSec >= day*3600*17+(1*3600)+300 && eatCount == 1 {
 			for _, p := range s.People[1*25 : 2*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -66,7 +66,7 @@ func (s *Simulation) Run(diffSec int) {
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(1*3600)+60 && eatCount == 2 {
+		} else if currentSec >= day*3600*17+(1*3600)+600 && eatCount == 2 {
 			for _, p := range s.People[2*25 : 3*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -74,7 +74,7 @@ func (s *Simulation) Run(diffSec int) {
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(1*3600)+90 && eatCount == 3 {
+		} else if currentSec >= day*3600*17+(1*3600)+900 && eatCount == 3 {
 			for _, p := range s.People[3*25 : 4*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -90,7 +90,7 @@ func (s *Simulation) Run(diffSec int) {
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(6*3600)+30 && eatCount == 5 {
+		} else if currentSec >= day*3600*17+(6*3600)+300 && eatCount == 5 {
 			for _, p := range s.People[1*25 : 2*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -98,7 +98,7 @@ func (s *Simulation) Run(diffSec int) {
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(6*3600)+60 && eatCount == 6 {
+		} else if currentSec >= day*3600*17+(6*3600)+600 && eatCount == 6 {
 			for _, p := range s.People[2*25 : 3*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -106,7 +106,7 @@ func (s *Simulation) Run(diffSec int) {
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(6*3600)+90 && eatCount == 7 {
+		} else if currentSec >= day*3600*17+(6*3600)+900 && eatCount == 7 {
 			for _, p := range s.People[3*25 : 4*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -122,7 +122,7 @@ func (s *Simulation) Run(diffSec int) {
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(12*3600)+30 && eatCount == 9 {
+		} else if currentSec >= day*3600*17+(12*3600)+300 && eatCount == 9 {
 			for _, p := range s.People[1*25 : 2*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -130,7 +130,7 @@ func (s *Simulation) Run(diffSec int) {
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(12*3600)+60 && eatCount == 10 {
+		} else if currentSec >= day*3600*17+(12*3600)+600 && eatCount == 10 {
 			for _, p := range s.People[2*25 : 3*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
@@ -138,7 +138,7 @@ func (s *Simulation) Run(diffSec int) {
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(12*3600)+90 && eatCount == 11 {
+		} else if currentSec >= day*3600*17+(12*3600)+900 && eatCount == 11 {
 			for _, p := range s.People[3*25 : 4*25] {
 				p.LifeAction = person.Eat
 				p.LifeActionElapsedTime = 0
