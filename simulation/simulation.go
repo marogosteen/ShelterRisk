@@ -6,49 +6,48 @@ import (
 	"example/OSURisk/person"
 )
 
+type MoversPosition map[person.Position][]person.PersonModel
+
 type Simulation struct {
-	MapSize           person.Position
-	GridCapacity      int
-	EndSec            int
-	People            []person.PersonModel
-	MoversPositionMap map[person.Position][]person.PersonModel
+	MapSize        person.Position
+	GridCapacity   int
+	EndSec         int
+	People         People
+	MoversPosition MoversPosition
 }
 
 func (s *Simulation) Run(diffSec int) {
-	// TODO new書くべきでは？？
-	s.MoversPositionMapInitialize()
 	personOrder := getPersonOder(len(s.People))
 
 	eatCount := 0
 	hogecount := 0
 	for currentSec := 0; currentSec <= s.EndSec; currentSec += diffSec {
 		day := currentSec / (3600 * 17)
-		
-			if currentSec >= hogecount*100000 {
-				movercount2 := 0
-				infectedcount := 0
-				for _, p := range s.People {
-					fmt.Printf("%+v,\n", p)
-					if p.InfectionStatus != person.Health {
-						infectedcount++
-					}
-					if p.LifeAction != person.Stay {
-						movercount2++
-					}
+
+		if currentSec >= hogecount*100000 {
+			movercount2 := 0
+			infectedcount := 0
+			for _, p := range s.People {
+				fmt.Printf("%+v,\n", p)
+				if p.InfectionStatus != person.Health {
+					infectedcount++
 				}
-				movercount1 := 0
-				for key, pl := range s.MoversPositionMap {
-					movercount1 += len(pl)
-					fmt.Printf("%v %+v\n", key, pl)
+				if p.LifeAction != person.Stay {
+					movercount2++
 				}
-				fmt.Println()
-				fmt.Println("sec", currentSec)
-				fmt.Println("infectedcount", infectedcount)
-				fmt.Println("movercount", movercount1)
-				fmt.Println("movercount2", movercount2)
-				hogecount++
 			}
-		
+			movercount1 := 0
+			for key, pl := range s.MoversPosition {
+				movercount1 += len(pl)
+				fmt.Printf("%v %+v\n", key, pl)
+			}
+			fmt.Println()
+			fmt.Println("sec", currentSec)
+			fmt.Println("infectedcount", infectedcount)
+			fmt.Println("movercount", movercount1)
+			fmt.Println("movercount2", movercount2)
+			hogecount++
+		}
 
 		if currentSec >= day*3600*17+(1*3600)+0 && eatCount == 0 {
 			for _, p := range s.People[0*25 : 1*25] {
@@ -191,7 +190,7 @@ func (s *Simulation) Run(diffSec int) {
 				}
 
 				// 渋滞による移動制限。移動できなかったPersonは残しておき、再度移動させる
-				if len(s.MoversPositionMap[nextPosition]) >= s.GridCapacity && p.LifeAction != person.Stay {
+				if len(s.MoversPosition[nextPosition]) >= s.GridCapacity && p.LifeAction != person.Stay {
 					// fmt.Printf("len:%v\nposition:%v\n", len(s.MoversPositionMap[nextPosition]), nextPosition)
 					nextPosition = p.NowPosition
 					congestedPeople = append(congestedPeople, p.Id)
@@ -201,11 +200,11 @@ func (s *Simulation) Run(diffSec int) {
 				// 制限されなかったPerson.Idを処理。
 				nextPersonOder = append(nextPersonOder, p.Id)
 
-				for index, bar := range s.MoversPositionMap[p.NowPosition] {
+				for index, bar := range s.MoversPosition[p.NowPosition] {
 					if bar.Id == p.Id {
-						s.MoversPositionMap[p.NowPosition] = append(s.MoversPositionMap[p.NowPosition][:index], s.MoversPositionMap[p.NowPosition][index+1:]...)
-						if len(s.MoversPositionMap[p.NowPosition]) == 0 {
-							delete(s.MoversPositionMap, p.NowPosition)
+						s.MoversPosition[p.NowPosition] = append(s.MoversPosition[p.NowPosition][:index], s.MoversPosition[p.NowPosition][index+1:]...)
+						if len(s.MoversPosition[p.NowPosition]) == 0 {
+							delete(s.MoversPosition, p.NowPosition)
 						}
 						break
 					}
@@ -213,7 +212,7 @@ func (s *Simulation) Run(diffSec int) {
 
 				p.NowPosition = nextPosition
 				if p.LifeAction != person.Stay {
-					s.MoversPositionMap[p.NowPosition] = append(s.MoversPositionMap[p.NowPosition], p)
+					s.MoversPosition[p.NowPosition] = append(s.MoversPosition[p.NowPosition], p)
 				}
 
 				s.People[id] = p
@@ -248,7 +247,7 @@ func (s *Simulation) Run(diffSec int) {
 		}
 	}
 	movercount1 := 0
-	for key, pl := range s.MoversPositionMap {
+	for key, pl := range s.MoversPosition {
 		movercount1 += len(pl)
 		fmt.Printf("%v %+v\n", key, pl)
 	}
@@ -259,15 +258,15 @@ func (s *Simulation) Run(diffSec int) {
 }
 
 // LifeActionがStay以外のPersonのみ保持する
-func (s *Simulation) MoversPositionMapInitialize() {
-	positionsMap := make(map[person.Position][]person.PersonModel)
-	for _, p := range s.People {
-		if p.LifeAction != person.Stay {
-			positionsMap[p.NowPosition] = append(positionsMap[p.NowPosition], p)
-		}
-	}
-	s.MoversPositionMap = positionsMap
-}
+// func (s *Simulation) MoversPositionMapInitialize() {
+// 	positionsMap := make(map[person.Position][]person.PersonModel)
+// 	for _, p := range s.People {
+// 		if p.LifeAction != person.Stay {
+// 			positionsMap[p.NowPosition] = append(positionsMap[p.NowPosition], p)
+// 		}
+// 	}
+// 	s.MoversPositionMap = positionsMap
+// }
 
 /*
 特定の条件を全て満たしたPersonに対して一定の確率で感染させる。
@@ -285,7 +284,7 @@ func (s *Simulation) infectionJudge() {
 		}
 	}
 
-	for position, people := range s.MoversPositionMap {
+	for position, people := range s.MoversPosition {
 		for _, p := range people {
 			// 同じ座標上にいる感染者数分の感染判定を行う。
 			for i := 0; i < infectedCountMap[position]; i++ {
@@ -297,6 +296,16 @@ func (s *Simulation) infectionJudge() {
 			}
 		}
 	}
+}
+
+func GenerateMoversPosition(people People) MoversPosition {
+	moversPosition := make(MoversPosition)
+	for _, p := range people {
+		if p.LifeAction != person.Stay {
+			moversPosition[p.NowPosition] = append(moversPosition[p.NowPosition], p)
+		}
+	}
+	return moversPosition
 }
 
 func getPersonOder(personCount int) []int {

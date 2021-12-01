@@ -29,13 +29,18 @@ func main() {
 	var config = config.Config
 	rand.Seed(time.Now().Unix())
 
+	people := simulation.NewPeople(config.PeopleCount)
+	people.SetInfected(config.InfectedCount)
+	moversPosition := simulation.GenerateMoversPosition(people)
+
 	//simulationの設定
 	simulation := simulation.Simulation{
 		// TODO 11マス*11マス以下のmapSize指定はError吐くべきでは？
-		MapSize:      person.Position{Y: config.MapSizeY, X: config.MapSizeX},
-		GridCapacity: config.GridCapacity,
-		EndSec:       428400,
-		People:       simulation.GeneratePeople(config.PeopleCount, config.InfectedCount),
+		MapSize:        person.Position{Y: config.MapSizeY, X: config.MapSizeX},
+		GridCapacity:   config.GridCapacity,
+		EndSec:         428400,
+		People:         people,
+		MoversPosition: moversPosition,
 	}
 	simulation.Run(config.TimeInterval)
 
