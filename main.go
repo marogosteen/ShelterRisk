@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"math/rand"
 	"time"
 
@@ -31,18 +32,15 @@ func main() {
 
 	people := simulation.NewPeople(config.PeopleCount)
 	people.SetInfected(config.InfectedCount)
-	moversPosition := simulation.GenerateMoversPosition(people)
 
 	//simulationの設定
-	simulation := simulation.Simulation{
-		// TODO 11マス*11マス以下のmapSize指定はError吐くべきでは？
-		MapSize:        person.Position{Y: config.MapSizeY, X: config.MapSizeX},
-		GridCapacity:   config.GridCapacity,
-		EndSec:         428400,
-		People:         people,
-		MoversPosition: moversPosition,
+	mapSize := person.Position{Y: config.MapSizeY, X: config.MapSizeX}
+	s, err := simulation.NewSimulation(mapSize, config.GridCapacity, 7, people)
+	if err != nil {
+		log.Fatal(err)
 	}
-	simulation.Run(config.TimeInterval)
+
+	s.Run(config.TimeInterval)
 
 	fmt.Printf("\nDone!\n")
 }

@@ -9,9 +9,9 @@ import (
 
 // 一人の人間を表現したStruct。
 type PersonModel struct {
-	Id           int      // ID
-	NowPosition  Position // 現在地
-	HomePosition Position // スタート地点
+	Id                    int             // ID
+	NowPosition           Position        // 現在地
+	HomePosition          Position        // スタート地点
 	PassedCount           int             // 目的地の通過数
 	InfectionStatus       InfectionStatus // 感染状況
 	LifeAction            LifeAction      // 生活活動

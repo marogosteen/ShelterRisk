@@ -1,7 +1,11 @@
 package simulation
 
 import (
+	"errors"
 	"fmt"
+	"log"
+	"strconv"
+	"time"
 
 	"example/OSURisk/person"
 )
@@ -11,17 +15,54 @@ type MoversPosition map[person.Position][]person.PersonModel
 type Simulation struct {
 	MapSize        person.Position
 	GridCapacity   int
-	EndSec         int
+	currentDate    time.Time
+	simulationDays time.Time
 	People         People
 	MoversPosition MoversPosition
+}
+
+func NewSimulation(
+	mapSize person.Position, gridCapacity int, simulationDays int, people People,
+) (s Simulation, err error) {
+	if mapSize.Y < 11 {
+		return Simulation{} ,errors.New("mapSizeのYが11未満")
+	}else if  mapSize.X < 11 {
+		return Simulation{} ,errors.New("mapSizeのXが11未満")
+	}
+
+	hour := simulationDays * 24
+	strHour := strconv.Itoa(int(hour)) + "h"
+	addHour, err := time.ParseDuration(strHour)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	NowDate := time.Now()
+	currentDate := time.Date(
+		NowDate.Hour(), NowDate.Month(), NowDate.Day(), 0, 0, 0, 0, NowDate.Location(),
+	)
+	finishDate := currentDate.Add(addHour)
+	moversPosition := GenerateMoversPosition(people)
+
+	s = Simulation{
+		MapSize:        mapSize,
+		GridCapacity:   gridCapacity,
+		currentDate:    currentDate,
+		simulationDays: finishDate,
+		People:         people,
+		MoversPosition: moversPosition,
+	}
+	return s, nil
 }
 
 func (s *Simulation) Run(diffSec int) {
 	personOrder := getPersonOder(len(s.People))
 
 	eatCount := 0
-	hogecount := 0
-	for currentSec := 0; currentSec <= s.EndSec; currentSec += diffSec {
+	var hogecount int = 0
+	var currentSec int = 0
+	// for currentSec := 0; currentSec <= s.simulationDays; currentSec += diffSec {
+	for ; currentSec <= 100; currentSec += diffSec {
 		day := currentSec / (3600 * 17)
 
 		if currentSec >= hogecount*100000 {
