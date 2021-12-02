@@ -39,7 +39,7 @@ func NewSimulation(
 
 	NowDate := time.Now()
 	currentDate := time.Date(
-		NowDate.Hour(), NowDate.Month(), 1, 6, 0, 0, 0, NowDate.Location(),
+		NowDate.Year(), NowDate.Month(), 1, 6, 0, 0, 0, NowDate.Location(),
 	)
 	finishDate := currentDate.Add(addHour)
 	moversPosition := GenerateMoversPosition(people)
@@ -60,8 +60,10 @@ func (s *Simulation) Run(interval time.Duration) {
 
 	eatCount := 0
 	var hogecount int = 0
-	fmt.Println(interval.Seconds())
 	for ; s.currentDate.Before(s.finishDate); s.currentDate = s.currentDate.Add(interval) {
+		if s.currentDate.Hour() >= 23 {
+			s.currentDate = s.nextDate()
+		}
 
 		if s.currentDate.Day() >= hogecount {
 			movercount2 := 0
@@ -82,7 +84,7 @@ func (s *Simulation) Run(interval time.Duration) {
 				fmt.Printf("%v %+v\n", key, pl)
 			}
 			fmt.Println()
-			fmt.Println("day", s.currentDate.Day())
+			fmt.Println("Date", s.currentDate)
 			fmt.Println("infectedcount", infectedcount)
 			fmt.Println("movercount", movercount1)
 			fmt.Println("movercount2", movercount2)
@@ -267,7 +269,6 @@ func (s *Simulation) Run(interval time.Duration) {
 				continue
 			}
 
-			// TODO 動作確認
 			nextPersonOder = append(nextPersonOder, congestedPeople...)
 			personOrder = nextPersonOder
 			break
@@ -275,39 +276,15 @@ func (s *Simulation) Run(interval time.Duration) {
 
 		s.infectionJudge()
 	}
-
-	movercount2 := 0
-	infectedcount := 0
-	for _, p := range s.People {
-		fmt.Printf("%+v,\n", p)
-		if p.InfectionStatus != person.Health {
-			infectedcount++
-		}
-		if p.LifeAction != person.Stay {
-			movercount2++
-		}
-	}
-	movercount1 := 0
-	for key, pl := range s.MoversPosition {
-		movercount1 += len(pl)
-		fmt.Printf("%v %+v\n", key, pl)
-	}
-	fmt.Println()
-	fmt.Println("infectedcount", infectedcount)
-	fmt.Println("movercount", movercount1)
-	fmt.Println("movercount2", movercount2)
 }
 
-// LifeActionがStay以外のPersonのみ保持する
-// func (s *Simulation) MoversPositionMapInitialize() {
-// 	positionsMap := make(map[person.Position][]person.PersonModel)
-// 	for _, p := range s.People {
-// 		if p.LifeAction != person.Stay {
-// 			positionsMap[p.NowPosition] = append(positionsMap[p.NowPosition], p)
-// 		}
-// 	}
-// 	s.MoversPositionMap = positionsMap
-// }
+func (s *Simulation) nextDate() (nextDate time.Time) {
+	nextDate = time.Date(
+		s.currentDate.Year(), s.currentDate.Month(), s.currentDate.Day()+1,
+		6, 0, 0, 0, s.currentDate.Location(),
+	)
+	return nextDate
+}
 
 /*
 特定の条件を全て満たしたPersonに対して一定の確率で感染させる。
