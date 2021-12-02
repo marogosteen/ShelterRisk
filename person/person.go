@@ -3,19 +3,20 @@ package person
 import (
 	"math"
 	"math/rand"
+	"time"
 
 	"example/OSURisk/config"
 )
 
 // 一人の人間を表現したStruct。
 type PersonModel struct {
-	Id                    int             // ID
-	NowPosition           Position        // 現在地
-	HomePosition          Position        // スタート地点
-	PassedCount           int             // 目的地の通過数
-	InfectionStatus       InfectionStatus // 感染状況
-	LifeAction            LifeAction      // 生活活動
-	LifeActionElapsedTime int
+	Id                   int             // ID
+	NowPosition          Position        // 現在地
+	HomePosition         Position        // スタート地点
+	PassedCount          int             // 目的地の通過数
+	InfectionStatus      InfectionStatus // 感染状況
+	LifeAction           LifeAction      // 生活活動
+	LifeActionElapsedSec float64
 }
 
 func NewPerson(id int, homePosition Position) (p *PersonModel) {
@@ -31,13 +32,13 @@ func NewPerson(id int, homePosition Position) (p *PersonModel) {
 }
 
 // diffSec分、personのLifeActionElapsedTimeを加算する。
-func (p *PersonModel) Stay(diffSec int) {
-	p.LifeActionElapsedTime += diffSec
+func (p *PersonModel) Stay(interval time.Duration) {
+	p.LifeActionElapsedSec += interval.Seconds()
 }
 
 // ランダムでPerson.NowPositionを周囲８方に変える。1%の確率でp.NowPositionが変化しない。
-func (p *PersonModel) Stroll(diffSec int, mapSize Position) (nextPosition Position) {
-	p.LifeActionElapsedTime += diffSec
+func (p *PersonModel) Stroll(interval time.Duration, mapSize Position) (nextPosition Position) {
+	p.LifeActionElapsedSec += interval.Seconds()
 
 	if 0.01 > rand.Float32() {
 		return p.NowPosition
@@ -117,7 +118,7 @@ func (p *PersonModel) IsDone() (isDone bool) {
 	isDone = false
 	switch p.LifeAction {
 	case Stay, Stroll:
-		if p.LifeActionElapsedTime > NecessaryTimeMap[p.LifeAction] {
+		if p.LifeActionElapsedSec > NecessaryTimeMap[p.LifeAction] {
 			isDone = true
 		}
 	case GoHome:
@@ -159,7 +160,7 @@ func (p *PersonModel) SetNextDistination() {
 // StayイベントがGoHomeとなる。
 func (p *PersonModel) setNextLifeAction() {
 	p.PassedCount = 0
-	p.LifeActionElapsedTime = 0
+	p.LifeActionElapsedSec = 0
 	nextLifeAction := getRandomAction()
 	if nextLifeAction == Stay && p.NowPosition != p.HomePosition {
 

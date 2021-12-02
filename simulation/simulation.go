@@ -16,7 +16,7 @@ type Simulation struct {
 	MapSize        person.Position
 	GridCapacity   int
 	currentDate    time.Time
-	simulationDays time.Time
+	finishDate     time.Time
 	People         People
 	MoversPosition MoversPosition
 }
@@ -25,9 +25,9 @@ func NewSimulation(
 	mapSize person.Position, gridCapacity int, simulationDays int, people People,
 ) (s Simulation, err error) {
 	if mapSize.Y < 11 {
-		return Simulation{} ,errors.New("mapSizeのYが11未満")
-	}else if  mapSize.X < 11 {
-		return Simulation{} ,errors.New("mapSizeのXが11未満")
+		return Simulation{}, errors.New("mapSizeのYが11未満")
+	} else if mapSize.X < 11 {
+		return Simulation{}, errors.New("mapSizeのXが11未満")
 	}
 
 	hour := simulationDays * 24
@@ -39,7 +39,7 @@ func NewSimulation(
 
 	NowDate := time.Now()
 	currentDate := time.Date(
-		NowDate.Hour(), NowDate.Month(), NowDate.Day(), 0, 0, 0, 0, NowDate.Location(),
+		NowDate.Hour(), NowDate.Month(), 1, 6, 0, 0, 0, NowDate.Location(),
 	)
 	finishDate := currentDate.Add(addHour)
 	moversPosition := GenerateMoversPosition(people)
@@ -48,24 +48,22 @@ func NewSimulation(
 		MapSize:        mapSize,
 		GridCapacity:   gridCapacity,
 		currentDate:    currentDate,
-		simulationDays: finishDate,
+		finishDate:     finishDate,
 		People:         people,
 		MoversPosition: moversPosition,
 	}
 	return s, nil
 }
 
-func (s *Simulation) Run(diffSec int) {
+func (s *Simulation) Run(interval time.Duration) {
 	personOrder := getPersonOder(len(s.People))
 
 	eatCount := 0
 	var hogecount int = 0
-	var currentSec int = 0
-	// for currentSec := 0; currentSec <= s.simulationDays; currentSec += diffSec {
-	for ; currentSec <= 100; currentSec += diffSec {
-		day := currentSec / (3600 * 17)
+	fmt.Println(interval.Seconds())
+	for ; s.currentDate.Before(s.finishDate); s.currentDate = s.currentDate.Add(interval) {
 
-		if currentSec >= hogecount*100000 {
+		if s.currentDate.Day() >= hogecount {
 			movercount2 := 0
 			infectedcount := 0
 			for _, p := range s.People {
@@ -77,116 +75,118 @@ func (s *Simulation) Run(diffSec int) {
 					movercount2++
 				}
 			}
+			fmt.Println("moversposition")
 			movercount1 := 0
 			for key, pl := range s.MoversPosition {
 				movercount1 += len(pl)
 				fmt.Printf("%v %+v\n", key, pl)
 			}
 			fmt.Println()
-			fmt.Println("sec", currentSec)
+			fmt.Println("day", s.currentDate.Day())
 			fmt.Println("infectedcount", infectedcount)
 			fmt.Println("movercount", movercount1)
 			fmt.Println("movercount2", movercount2)
 			hogecount++
 		}
 
-		if currentSec >= day*3600*17+(1*3600)+0 && eatCount == 0 {
+		foo := s.currentDate.Hour()*60 + s.currentDate.Minute()
+		if foo >= 7*60 && eatCount == 0 {
 			for _, p := range s.People[0*25 : 1*25] {
 				p.LifeAction = person.Eat
-				p.LifeActionElapsedTime = 0
+				p.LifeActionElapsedSec = 0
 				p.PassedCount = 0
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(1*3600)+900 && eatCount == 1 {
+		} else if foo >= 7*60+15 && eatCount == 1 {
 			for _, p := range s.People[1*25 : 2*25] {
 				p.LifeAction = person.Eat
-				p.LifeActionElapsedTime = 0
+				p.LifeActionElapsedSec = 0
 				p.PassedCount = 0
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(1*3600)+1800 && eatCount == 2 {
+		} else if foo >= 7*60+30 && eatCount == 2 {
 			for _, p := range s.People[2*25 : 3*25] {
 				p.LifeAction = person.Eat
-				p.LifeActionElapsedTime = 0
+				p.LifeActionElapsedSec = 0
 				p.PassedCount = 0
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(1*3600)+2700 && eatCount == 3 {
+		} else if foo >= 7*60+45 && eatCount == 3 {
 			for _, p := range s.People[3*25 : 4*25] {
 				p.LifeAction = person.Eat
-				p.LifeActionElapsedTime = 0
+				p.LifeActionElapsedSec = 0
 				p.PassedCount = 0
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(6*3600)+0 && eatCount == 4 {
+		} else if foo >= 12*60 && eatCount == 4 {
 			for _, p := range s.People[0*25 : 1*25] {
 				p.LifeAction = person.Eat
-				p.LifeActionElapsedTime = 0
+				p.LifeActionElapsedSec = 0
 				p.PassedCount = 0
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(6*3600)+900 && eatCount == 5 {
+		} else if foo >= 12*60+15 && eatCount == 5 {
 			for _, p := range s.People[1*25 : 2*25] {
 				p.LifeAction = person.Eat
-				p.LifeActionElapsedTime = 0
+				p.LifeActionElapsedSec = 0
 				p.PassedCount = 0
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(6*3600)+1800 && eatCount == 6 {
+		} else if foo >= 12*60+30 && eatCount == 6 {
 			for _, p := range s.People[2*25 : 3*25] {
 				p.LifeAction = person.Eat
-				p.LifeActionElapsedTime = 0
+				p.LifeActionElapsedSec = 0
 				p.PassedCount = 0
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(6*3600)+2700 && eatCount == 7 {
+		} else if foo >= 12*60+45 && eatCount == 7 {
 			for _, p := range s.People[3*25 : 4*25] {
 				p.LifeAction = person.Eat
-				p.LifeActionElapsedTime = 0
+				p.LifeActionElapsedSec = 0
 				p.PassedCount = 0
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(12*3600)+0 && eatCount == 8 {
+		} else if foo >= 18*60+0 && eatCount == 8 {
 			for _, p := range s.People[0*25 : 1*25] {
 				p.LifeAction = person.Eat
-				p.LifeActionElapsedTime = 0
+				p.LifeActionElapsedSec = 0
 				p.PassedCount = 0
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(12*3600)+900 && eatCount == 9 {
+		} else if foo >= 18*60+15 && eatCount == 9 {
 			for _, p := range s.People[1*25 : 2*25] {
 				p.LifeAction = person.Eat
-				p.LifeActionElapsedTime = 0
+				p.LifeActionElapsedSec = 0
 				p.PassedCount = 0
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(12*3600)+1800 && eatCount == 10 {
+		} else if foo >= 18*60+30 && eatCount == 10 {
 			for _, p := range s.People[2*25 : 3*25] {
 				p.LifeAction = person.Eat
-				p.LifeActionElapsedTime = 0
+				p.LifeActionElapsedSec = 0
 				p.PassedCount = 0
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec >= day*3600*17+(12*3600)+2700 && eatCount == 11 {
+		} else if foo >= 18*60+45 && eatCount == 11 {
 			for _, p := range s.People[3*25 : 4*25] {
 				p.LifeAction = person.Eat
-				p.LifeActionElapsedTime = 0
+				p.LifeActionElapsedSec = 0
 				p.PassedCount = 0
 				s.People[p.Id] = p
 			}
 			eatCount++
-		} else if currentSec < day*3600*17+(1*3600)+0 && eatCount == 12 {
+		} else if foo < 7*60+0 && eatCount == 12 {
 			eatCount = 0
 		}
 
@@ -222,10 +222,10 @@ func (s *Simulation) Run(diffSec int) {
 				var nextPosition person.Position
 				switch p.LifeAction {
 				case person.Stay:
-					p.Stay(diffSec)
+					p.Stay(interval)
 					nextPosition = p.NowPosition
 				case person.Stroll:
-					nextPosition = p.Stroll(diffSec, s.MapSize)
+					nextPosition = p.Stroll(interval, s.MapSize)
 				default:
 					nextPosition = p.Move(s.MapSize)
 				}

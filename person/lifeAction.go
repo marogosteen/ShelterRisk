@@ -5,17 +5,6 @@ import (
 )
 
 // トイレや食事などの生活する上での活動を表現したEnum。
-// type LifeAction int
-
-// const (
-// 	Stay LifeAction = iota
-// 	Stroll
-// 	CheckBoard
-// 	ChangeClthes
-// 	BathRoom
-// 	Eat
-// 	GoHome
-// )
 type LifeAction string
 
 const (
@@ -28,13 +17,14 @@ const (
 	GoHome       LifeAction = "GoHome"
 )
 
-// ランダムで決まるActionのMap。強制に設定させるEatやGobackは含まれない。
 var (
-	probabilityMap map[LifeAction]float32
-	NecessaryTimeMap   map[LifeAction]int
+	// KeyをLifeAction、Valueを確率値としたMap。強制に設定させるEatやGobackは含まれない。
+	probabilityMap   map[LifeAction]float32
+	NecessaryTimeMap map[LifeAction]float64
 )
 
 func init() {
+	// TODO Test実装して、１になるか確認できるようにするべき。
 	// ランダムで決まるActionのそれぞれの確率
 	probabilityMap = map[LifeAction]float32{
 		Stay:         0.89,
@@ -44,13 +34,13 @@ func init() {
 		BathRoom:     0.03,
 	}
 
-	NecessaryTimeMap = map[LifeAction]int{
-		Stay:   3600,
-		Stroll: 600,
+	NecessaryTimeMap = map[LifeAction]float64{
+		Stay:   3600.0,
+		Stroll: 600.0,
 	}
 }
 
-// probabilityMapからランダムにActionを決める。
+// probabilityMapからランダムにLifeActionを決める。
 func getRandomAction() LifeAction {
 	randNum := rand.Float32()
 	var actionProbability float32 = 0.0

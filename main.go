@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"strconv"
 	"time"
 
 	"example/OSURisk/config"
@@ -27,20 +28,28 @@ TODO
 */
 
 func main() {
+	// run に 日替わりが必要。Hourを6にする。
+
+
+
 	var config = config.Config
 	rand.Seed(time.Now().Unix())
 
 	people := simulation.NewPeople(config.PeopleCount)
 	people.SetInfected(config.InfectedCount)
+	mapSize := person.Position{Y: config.MapSizeY, X: config.MapSizeX}
 
 	//simulationの設定
-	mapSize := person.Position{Y: config.MapSizeY, X: config.MapSizeX}
 	s, err := simulation.NewSimulation(mapSize, config.GridCapacity, 7, people)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	s.Run(config.TimeInterval)
+	interval, err := time.ParseDuration(strconv.Itoa(config.TimeInterval) + "s")
+	if err != nil {
+		log.Fatal(err)
+	}
+	s.Run(interval)
 
 	fmt.Printf("\nDone!\n")
 }
