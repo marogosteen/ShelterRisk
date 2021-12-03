@@ -36,7 +36,7 @@ func main() {
 	mapSize := person.Position{Y: config.MapSizeY, X: config.MapSizeX}
 
 	//simulationの設定
-	s, err := simulation.NewSimulation(mapSize, config.GridCapacity, 7, people)
+	s, err := simulation.NewSimulationModel(mapSize, config.GridCapacity, 7, people)
 	if err != nil {
 		log.Fatal(err)
 	}

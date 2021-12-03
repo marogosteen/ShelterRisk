@@ -13,7 +13,7 @@ const (
 	CheckBoard   LifeAction = "CheckBoard"
 	ChangeClthes LifeAction = "ChangeClthes"
 	BathRoom     LifeAction = "BathRoom"
-	Meal         LifeAction = "Eat"
+	Meal         LifeAction = "Meal"
 	GoHome       LifeAction = "GoHome"
 )
 
