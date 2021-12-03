@@ -110,23 +110,10 @@ func (s *SimulationModel) Run(interval time.Duration) {
 		for {
 			for _, id := range personOrder {
 				p := s.People[id]
-				// TODO 後で消す
-				// if p.NowPosition == p.HomePosition && p.LifeAction == person.GoHome && p.HomePosition.X == 0 && p.NowPosition.X == 0 {
-				// 	fmt.Printf("%v %+v\n", p.IsDone(), p)
-				// 	if !p.IsDone() {
-				// 		fmt.Println("\n\n\n\n\n\n\n\n\n\n\n\n")
-				// 	}
-				// }
 
 				// 目的地に到達、次の目的地。
 				if p.IsDone() {
 					p.SetNextDistination()
-
-					// TODO 後で消す
-					if p.NowPosition == p.HomePosition && p.LifeAction == person.GoHome && p.HomePosition.X == 0 && p.NowPosition.X == 0 {
-						fmt.Printf("%v %+v\n", p.IsDone(), p)
-					}
-
 				}
 
 				// LifeActionに合わせた動作。
@@ -143,7 +130,6 @@ func (s *SimulationModel) Run(interval time.Duration) {
 
 				// 渋滞による移動制限。移動できなかったPersonは残しておき、再度移動させる
 				if len(s.MoversPosition[nextPosition]) >= s.GridCapacity && p.LifeAction != person.Stay {
-					// fmt.Printf("len:%v\nposition:%v\n", len(s.MoversPositionMap[nextPosition]), nextPosition)
 					nextPosition = p.NowPosition
 					congestedPeople = append(congestedPeople, p.Id)
 					continue
@@ -203,7 +189,7 @@ func (s *SimulationModel) setMealTimes(interval time.Duration) People {
 
 	newPeople := s.People
 	mealGroupCount := (len(newPeople)-1) / 25
-	secondsFromMidnight := (s.currentDate.Hour()*60 + s.currentDate.Minute()) * 60
+	secondsFromMidnight := (s.currentDate.Hour()*60 + s.currentDate.Minute()) * 60 +s.currentDate.Second()
 
 	var nextMealSecond int
 	if s.currentDate.Hour() <= breakFastHour {
@@ -230,105 +216,6 @@ func (s *SimulationModel) setMealTimes(interval time.Duration) People {
 	}
 
 	return newPeople
-
-	/*
-		// 食事時間を超え、超過時間がInterval以内
-		if secondsFromMidnight >= breakFastSecond && breakFastSecond+int(interval.Seconds()) > secondsFromMidnight {
-			for _, p := range s.People[0*25 : 1*25] {
-				p.LifeAction = person.Meal
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				newPeople[p.Id] = p
-			}
-		} else if secondsFromMidnight >= breakFastSecond+15*60 && breakFastSecond+int(interval.Seconds())+15*60 > secondsFromMidnight {
-			for _, p := range s.People[1*25 : 2*25] {
-				p.LifeAction = person.Meal
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				newPeople[p.Id] = p
-			}
-		} else if secondsFromMidnight >= breakFastSecond+30*60 && breakFastSecond+int(interval.Seconds())+30*60 > secondsFromMidnight {
-			for _, p := range s.People[2*25 : 3*25] {
-				p.LifeAction = person.Meal
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				newPeople[p.Id] = p
-			}
-		} else if secondsFromMidnight >= breakFastSecond+45*60 && breakFastSecond+int(interval.Seconds())+45*60 > secondsFromMidnight {
-			for _, p := range s.People[3*25 : 4*25] {
-				p.LifeAction = person.Meal
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				newPeople[p.Id] = p
-			}
-
-		} else if secondsFromMidnight >= lunchSecond && lunchSecond+int(interval.Seconds()) > secondsFromMidnight {
-			for _, p := range s.People[0*25 : 1*25] {
-				p.LifeAction = person.Meal
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				newPeople[p.Id] = p
-			}
-
-		} else if secondsFromMidnight >= lunchSecond+15*60 && lunchSecond+int(interval.Seconds())+15*60 > secondsFromMidnight {
-			for _, p := range s.People[1*25 : 2*25] {
-				p.LifeAction = person.Meal
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				newPeople[p.Id] = p
-			}
-
-		} else if secondsFromMidnight >= lunchSecond+30*60 && lunchSecond+int(interval.Seconds())+30*60 > secondsFromMidnight {
-			for _, p := range s.People[2*25 : 3*25] {
-				p.LifeAction = person.Meal
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				newPeople[p.Id] = p
-			}
-
-		} else if secondsFromMidnight >= lunchSecond+45*60 && lunchSecond+int(interval.Seconds())+45*60 > secondsFromMidnight {
-			for _, p := range s.People[3*25 : 4*25] {
-				p.LifeAction = person.Meal
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				newPeople[p.Id] = p
-			}
-
-		} else if secondsFromMidnight >= dinnerSecond && dinnerSecond+int(interval.Seconds()) > secondsFromMidnight {
-			for _, p := range s.People[0*25 : 1*25] {
-				p.LifeAction = person.Meal
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				newPeople[p.Id] = p
-			}
-
-		} else if secondsFromMidnight >= dinnerSecond+15*60 && dinnerSecond+int(interval.Seconds())+15*60 > secondsFromMidnight {
-			for _, p := range s.People[1*25 : 2*25] {
-				p.LifeAction = person.Meal
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				newPeople[p.Id] = p
-			}
-
-		} else if secondsFromMidnight >= dinnerSecond+30*60 && dinnerSecond+int(interval.Seconds())+30*60 > secondsFromMidnight {
-			for _, p := range s.People[2*25 : 3*25] {
-				p.LifeAction = person.Meal
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				newPeople[p.Id] = p
-			}
-
-		} else if secondsFromMidnight >= dinnerSecond+45*60 && dinnerSecond+int(interval.Seconds())+45*60 > secondsFromMidnight {
-			for _, p := range s.People[3*25 : 4*25] {
-				p.LifeAction = person.Meal
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				newPeople[p.Id] = p
-			}
-		}
-
-		return newPeople
-	*/
 }
 
 // simulationのcurrentDateを1日進め、Hourを午前6時にしたDateを返す。
