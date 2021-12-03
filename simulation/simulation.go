@@ -55,142 +55,51 @@ func NewSimulation(
 	return s, nil
 }
 
+func (s *Simulation) ShowInfo() {
+	movercount2 := 0
+	infectedcount := 0
+	for _, p := range s.People {
+		fmt.Printf("%+v,\n", p)
+		if p.InfectionStatus != person.Health {
+			infectedcount++
+		}
+		if p.LifeAction != person.Stay {
+			movercount2++
+		}
+	}
+	fmt.Println("\nmoversposition")
+	movercount1 := 0
+	for key, pl := range s.MoversPosition {
+		movercount1 += len(pl)
+		fmt.Printf("%v %+v\n", key, pl)
+	}
+	fmt.Println()
+	fmt.Println("Date", s.currentDate)
+	fmt.Println("infectedcount", infectedcount)
+	fmt.Println("movercount", movercount1)
+	if !(movercount1 == movercount2) {
+		log.Fatal(errors.New("movercountが一致しない"))
+	}
+
+	fmt.Printf("\n\n")
+}
+
 func (s *Simulation) Run(interval time.Duration) {
+	s.ShowInfo()
 	personOrder := getPersonOder(len(s.People))
 
-	eatCount := 0
-	var hogecount int = 0
-	for ; s.currentDate.Before(s.finishDate); s.currentDate = s.currentDate.Add(interval) {
+	for ; ; s.currentDate = s.currentDate.Add(interval) {
+		// 1日を23時までとし、過ぎるとnextDate()をCallする。
 		if s.currentDate.Hour() >= 23 {
 			s.currentDate = s.nextDate()
+			s.ShowInfo()
 		}
 
-		if s.currentDate.Day() >= hogecount {
-			movercount2 := 0
-			infectedcount := 0
-			for _, p := range s.People {
-				fmt.Printf("%+v,\n", p)
-				if p.InfectionStatus != person.Health {
-					infectedcount++
-				}
-				if p.LifeAction != person.Stay {
-					movercount2++
-				}
-			}
-			fmt.Println("moversposition")
-			movercount1 := 0
-			for key, pl := range s.MoversPosition {
-				movercount1 += len(pl)
-				fmt.Printf("%v %+v\n", key, pl)
-			}
-			fmt.Println()
-			fmt.Println("Date", s.currentDate)
-			fmt.Println("infectedcount", infectedcount)
-			fmt.Println("movercount", movercount1)
-			fmt.Println("movercount2", movercount2)
-			hogecount++
+		if !s.currentDate.Before(s.finishDate) {
+			break
 		}
 
-		foo := s.currentDate.Hour()*60 + s.currentDate.Minute()
-		if foo >= 7*60 && eatCount == 0 {
-			for _, p := range s.People[0*25 : 1*25] {
-				p.LifeAction = person.Eat
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				s.People[p.Id] = p
-			}
-			eatCount++
-		} else if foo >= 7*60+15 && eatCount == 1 {
-			for _, p := range s.People[1*25 : 2*25] {
-				p.LifeAction = person.Eat
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				s.People[p.Id] = p
-			}
-			eatCount++
-		} else if foo >= 7*60+30 && eatCount == 2 {
-			for _, p := range s.People[2*25 : 3*25] {
-				p.LifeAction = person.Eat
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				s.People[p.Id] = p
-			}
-			eatCount++
-		} else if foo >= 7*60+45 && eatCount == 3 {
-			for _, p := range s.People[3*25 : 4*25] {
-				p.LifeAction = person.Eat
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				s.People[p.Id] = p
-			}
-			eatCount++
-		} else if foo >= 12*60 && eatCount == 4 {
-			for _, p := range s.People[0*25 : 1*25] {
-				p.LifeAction = person.Eat
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				s.People[p.Id] = p
-			}
-			eatCount++
-		} else if foo >= 12*60+15 && eatCount == 5 {
-			for _, p := range s.People[1*25 : 2*25] {
-				p.LifeAction = person.Eat
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				s.People[p.Id] = p
-			}
-			eatCount++
-		} else if foo >= 12*60+30 && eatCount == 6 {
-			for _, p := range s.People[2*25 : 3*25] {
-				p.LifeAction = person.Eat
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				s.People[p.Id] = p
-			}
-			eatCount++
-		} else if foo >= 12*60+45 && eatCount == 7 {
-			for _, p := range s.People[3*25 : 4*25] {
-				p.LifeAction = person.Eat
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				s.People[p.Id] = p
-			}
-			eatCount++
-		} else if foo >= 18*60+0 && eatCount == 8 {
-			for _, p := range s.People[0*25 : 1*25] {
-				p.LifeAction = person.Eat
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				s.People[p.Id] = p
-			}
-			eatCount++
-		} else if foo >= 18*60+15 && eatCount == 9 {
-			for _, p := range s.People[1*25 : 2*25] {
-				p.LifeAction = person.Eat
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				s.People[p.Id] = p
-			}
-			eatCount++
-		} else if foo >= 18*60+30 && eatCount == 10 {
-			for _, p := range s.People[2*25 : 3*25] {
-				p.LifeAction = person.Eat
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				s.People[p.Id] = p
-			}
-			eatCount++
-		} else if foo >= 18*60+45 && eatCount == 11 {
-			for _, p := range s.People[3*25 : 4*25] {
-				p.LifeAction = person.Eat
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				s.People[p.Id] = p
-			}
-			eatCount++
-		} else if foo < 7*60+0 && eatCount == 12 {
-			eatCount = 0
-		}
+		s.People = s.checkMealTimes()
 
 		var (
 			nextPersonOder  []int
@@ -278,6 +187,119 @@ func (s *Simulation) Run(interval time.Duration) {
 	}
 }
 
+func (s *Simulation) checkMealTimes() People {
+	return s.People
+}
+
+/*
+func (s *Simulation) __checkMealTimes() People {
+	// TODO 正しい時間に反応してる？？
+	elapsedScounds := (s.currentDate.Hour()*60 + s.currentDate.Minute()) * 60
+	if elapsedScounds >= 7*60 && eatCount == 0 {
+		for _, p := range s.People[0*25 : 1*25] {
+			p.LifeAction = person.Eat
+			p.LifeActionElapsedSec = 0
+			p.PassedCount = 0
+			s.People[p.Id] = p
+		}
+		eatCount++
+	} else if elapsedScounds >= 7*60+15 && eatCount == 1 {
+		for _, p := range s.People[1*25 : 2*25] {
+			p.LifeAction = person.Eat
+			p.LifeActionElapsedSec = 0
+			p.PassedCount = 0
+			s.People[p.Id] = p
+		}
+		eatCount++
+	} else if elapsedScounds >= 7*60+30 && eatCount == 2 {
+		for _, p := range s.People[2*25 : 3*25] {
+			p.LifeAction = person.Eat
+			p.LifeActionElapsedSec = 0
+			p.PassedCount = 0
+			s.People[p.Id] = p
+		}
+		eatCount++
+	} else if elapsedScounds >= 7*60+45 && eatCount == 3 {
+		for _, p := range s.People[3*25 : 4*25] {
+			p.LifeAction = person.Eat
+			p.LifeActionElapsedSec = 0
+			p.PassedCount = 0
+			s.People[p.Id] = p
+		}
+		eatCount++
+	} else if elapsedScounds >= 12*60 && eatCount == 4 {
+		for _, p := range s.People[0*25 : 1*25] {
+			p.LifeAction = person.Eat
+			p.LifeActionElapsedSec = 0
+			p.PassedCount = 0
+			s.People[p.Id] = p
+		}
+		eatCount++
+	} else if elapsedScounds >= 12*60+15 && eatCount == 5 {
+		for _, p := range s.People[1*25 : 2*25] {
+			p.LifeAction = person.Eat
+			p.LifeActionElapsedSec = 0
+			p.PassedCount = 0
+			s.People[p.Id] = p
+		}
+		eatCount++
+	} else if elapsedScounds >= 12*60+30 && eatCount == 6 {
+		for _, p := range s.People[2*25 : 3*25] {
+			p.LifeAction = person.Eat
+			p.LifeActionElapsedSec = 0
+			p.PassedCount = 0
+			s.People[p.Id] = p
+		}
+		eatCount++
+	} else if elapsedScounds >= 12*60+45 && eatCount == 7 {
+		for _, p := range s.People[3*25 : 4*25] {
+			p.LifeAction = person.Eat
+			p.LifeActionElapsedSec = 0
+			p.PassedCount = 0
+			s.People[p.Id] = p
+		}
+		eatCount++
+	} else if elapsedScounds >= 18*60+0 && eatCount == 8 {
+		for _, p := range s.People[0*25 : 1*25] {
+			p.LifeAction = person.Eat
+			p.LifeActionElapsedSec = 0
+			p.PassedCount = 0
+			s.People[p.Id] = p
+		}
+		eatCount++
+	} else if elapsedScounds >= 18*60+15 && eatCount == 9 {
+		for _, p := range s.People[1*25 : 2*25] {
+			p.LifeAction = person.Eat
+			p.LifeActionElapsedSec = 0
+			p.PassedCount = 0
+			s.People[p.Id] = p
+		}
+		eatCount++
+	} else if elapsedScounds >= 18*60+30 && eatCount == 10 {
+		for _, p := range s.People[2*25 : 3*25] {
+			p.LifeAction = person.Eat
+			p.LifeActionElapsedSec = 0
+			p.PassedCount = 0
+			s.People[p.Id] = p
+		}
+		eatCount++
+	} else if elapsedScounds >= 18*60+45 && eatCount == 11 {
+		for _, p := range s.People[3*25 : 4*25] {
+			p.LifeAction = person.Eat
+			p.LifeActionElapsedSec = 0
+			p.PassedCount = 0
+			s.People[p.Id] = p
+		}
+		eatCount++
+	} else if elapsedScounds < 7*60+0 && eatCount == 12 {
+		eatCount = 0
+	}
+
+	return newPeople
+}
+*/
+
+// simulationのcurrentDateを1日進め、Hourを午前6時にしたDateを返す。
 func (s *Simulation) nextDate() (nextDate time.Time) {
 	nextDate = time.Date(
 		s.currentDate.Year(), s.currentDate.Month(), s.currentDate.Day()+1,

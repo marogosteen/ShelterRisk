@@ -47,26 +47,5 @@ func main() {
 	}
 	s.Run(interval)
 
-	movercount2 := 0
-	infectedcount := 0
-	for _, p := range s.People {
-		fmt.Printf("%+v,\n", p)
-		if p.InfectionStatus != person.Health {
-			infectedcount++
-		}
-		if p.LifeAction != person.Stay {
-			movercount2++
-		}
-	}
-	movercount1 := 0
-	for key, pl := range s.MoversPosition {
-		movercount1 += len(pl)
-		fmt.Printf("%v %+v\n", key, pl)
-	}
-	fmt.Println()
-	fmt.Println("infectedcount", infectedcount)
-	fmt.Println("movercount", movercount1)
-	fmt.Println("movercount2", movercount2)
-
 	fmt.Printf("\nDone!\n")
 }
