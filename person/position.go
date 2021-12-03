@@ -20,7 +20,7 @@ func init() {
 		CheckBoard:   {Position{Y: mapSizeY, X: mapSizeX}},
 		ChangeClthes: {Position{Y: mapSizeY / 2, X: mapSizeX}},
 		BathRoom:     {Position{Y: 0, X: mapSizeX}},
-		Eat: {
+		Meal: {
 			Position{Y: mapSizeY - 5, X: 0},
 			Position{Y: mapSizeY, X: 0},
 			Position{Y: mapSizeY, X: 5},
