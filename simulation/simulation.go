@@ -86,6 +86,7 @@ func (s *SimulationModel) ShowInfo() {
 
 func (s *SimulationModel) Run(interval time.Duration) {
 	s.ShowInfo()
+	m := newMealTime(s.People, interval)
 	personOrder := getPersonOder(len(s.People))
 
 	for ; ; s.currentDate = s.currentDate.Add(interval) {
@@ -99,7 +100,7 @@ func (s *SimulationModel) Run(interval time.Duration) {
 			break
 		}
 
-		s.People = s.setMealTimes(interval)
+		s.People = m.setMealTime(s.People, s.currentDate)
 
 		var (
 			nextPersonOder  []int
@@ -171,51 +172,6 @@ func (s *SimulationModel) Run(interval time.Duration) {
 
 		s.infectionJudge()
 	}
-}
-
-const (
-	breakFastHour   int = 7
-	breakFastSecond int = breakFastHour * 60 * 60
-	lunchHour       int = 12
-	lunchSecond     int = lunchHour * 60 * 60
-	dinnerHour      int = 18
-	dinnerSecond    int = dinnerHour * 60 * 60
-)
-
-func (s *SimulationModel) setMealTimes(interval time.Duration) People {
-	// TODO 正しい時間に反応してる？？
-
-	// TODO これ正しい？？秒に直せてる？？
-
-	newPeople := s.People
-	mealGroupCount := (len(newPeople)-1) / 25
-	secondsFromMidnight := (s.currentDate.Hour()*60 + s.currentDate.Minute()) * 60 +s.currentDate.Second()
-
-	var nextMealSecond int
-	if s.currentDate.Hour() <= breakFastHour {
-		nextMealSecond = breakFastSecond
-	} else if s.currentDate.Hour() <= lunchHour {
-		nextMealSecond = breakFastSecond
-	} else if s.currentDate.Hour() <= dinnerHour {
-		nextMealSecond = breakFastSecond
-	}
-
-	groupDurationSecond := 15 * 60
-
-	for xxx := 0; xxx < mealGroupCount; xxx++ {
-		nextMealSecond__ := nextMealSecond + groupDurationSecond*xxx
-
-		if secondsFromMidnight >= nextMealSecond__ && nextMealSecond__+int(interval.Seconds()) > secondsFromMidnight {
-			for _, p := range s.People[xxx*25 : (xxx+1)*25] {
-				p.LifeAction = person.Meal
-				p.LifeActionElapsedSec = 0
-				p.PassedCount = 0
-				newPeople[p.Id] = p
-			}
-		}
-	}
-
-	return newPeople
 }
 
 // simulationのcurrentDateを1日進め、Hourを午前6時にしたDateを返す。
