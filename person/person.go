@@ -107,7 +107,7 @@ func (p *PersonModel) Move(mapSize Position) (nextPosition Position) {
 	if !(diffY == 0) {
 		yCourse = diffY / absDiffY
 	}
-	if !(diffY == 0) {
+	if !(diffX == 0) {
 		xCourse = diffX / absDiffX
 	}
 
