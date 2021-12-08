@@ -95,12 +95,21 @@ func (p *PersonModel) Move(mapSize Position) (nextPosition Position) {
 		log.Fatalln("distinationとnowPositionが同じ座標です。")
 	}
 
+	// 目的地との差分。
 	diffY := distination.Y - p.NowPosition.Y
 	diffX := distination.X - p.NowPosition.X
 	absDiffY := int(math.Abs(float64(diffY)))
 	absDiffX := int(math.Abs(float64(diffX)))
-	yCourse := diffY / absDiffY
-	xCourse := diffX / absDiffX
+	yCourse := 0
+	xCourse := 0
+
+	// 縦方向と横方向の-1から1の移動量。
+	if !(diffY == 0) {
+		yCourse = diffY / absDiffY
+	}
+	if !(diffY == 0) {
+		xCourse = diffX / absDiffX
+	}
 
 	if absDiffY == absDiffX {
 		nextPosition = Position{
