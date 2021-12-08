@@ -4,6 +4,23 @@ import (
 	"math/rand"
 )
 
+func init() {
+	// TODO Test実装して、１になるか確認できるようにするべき。
+	// ランダムで決まるActionのそれぞれの確率
+	probability = map[LifeAction]float32{
+		Stay:         0.89,
+		Stroll:       0.03,
+		CheckBoard:   0.02,
+		ChangeClthes: 0.03,
+		BathRoom:     0.03,
+	}
+
+	TimeRequired = map[LifeAction]float64{
+		Stay:   3600.0,
+		Stroll: 600.0,
+	}
+}
+
 // トイレや食事などの生活する上での活動を表現したEnum。
 type LifeAction string
 
@@ -19,40 +36,25 @@ const (
 
 var (
 	// KeyをLifeAction、Valueを確率値としたMap。強制に設定させるEatやGobackは含まれない。
-	probabilityMap   map[LifeAction]float32
-	NecessaryTimeMap map[LifeAction]float64
+	probability map[LifeAction]float32
+	// KeyをLifeAction、ValueをStayとStrollの所要時間としたMap。
+	TimeRequired map[LifeAction]float64
+	// 確率で決まるLifeActionの配列
+	key [5]LifeAction = [5]LifeAction{Stay, BathRoom, ChangeClthes, CheckBoard, Stroll}
 )
-
-func init() {
-	// TODO Test実装して、１になるか確認できるようにするべき。
-	// ランダムで決まるActionのそれぞれの確率
-	probabilityMap = map[LifeAction]float32{
-		Stay:         0.89,
-		Stroll:       0.03,
-		CheckBoard:   0.02,
-		ChangeClthes: 0.03,
-		BathRoom:     0.03,
-	}
-
-	NecessaryTimeMap = map[LifeAction]float64{
-		Stay:   3600.0,
-		Stroll: 600.0,
-	}
-}
 
 // probabilityMapからランダムにLifeActionを決める。
 func getRandomAction() LifeAction {
 	randNum := rand.Float32()
-	var actionProbability float32 = 0.0
-	var resultAction LifeAction
-	probabilityMapKey := []LifeAction{Stay, BathRoom, ChangeClthes, CheckBoard, Stroll}
-	for _, lifeAction := range probabilityMapKey {
-		value := probabilityMap[lifeAction]
-		actionProbability += value
-		if actionProbability > randNum {
+	var sumP float32 = 0.0
+	resultAction := key[len(key)-1]
+	for _, lifeAction := range key {
+		sumP += probability[lifeAction]
+		if sumP > randNum {
 			resultAction = lifeAction
 			break
 		}
 	}
+
 	return resultAction
 }
