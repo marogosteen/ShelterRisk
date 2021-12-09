@@ -3,7 +3,7 @@ package person
 type InfectionStatus string
 
 const (
-	Health     InfectionStatus = "Healt"
+	Health     InfectionStatus = "Health"
 	Incubation InfectionStatus = "Incubation"
 	Infection  InfectionStatus = "Infection"
 )
