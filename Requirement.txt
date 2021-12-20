@@ -1,52 +1,82 @@
-Personの要件
-	m 初期化
-	m 移動する
-		移動方向は斜めを含めたは９方向。
-			壁に衝突の際はそれ以外の6方向に動く。
-			動かない選択の確率は低くする。
-		イベントに応じた指向性を持たせたい。
-	m イベントを決めるメソッド
-	m 感染したかどうかチェックする
-	f 現在地を保持する
-	f IDを持たす
-	f スタートの位置
-	f イベント経過時間
+Personの要件(避難所内で移動する人)
+		Personとは、マス（２ｍ×２ｍ）を３secで移動する人。
+		健康者、感染者の2パターンに分ける。
+
+	Personが持っているもの
+		自分のID
+		スタート位置(HomePosition)
+		イベントの経過時間を理解している。(ElapsedTime)
+		感染したかどうかチェックできる。
+		イベントに応じた指向性を持っている。
+		移動方向は斜めを含めたは９方向で壁に衝突の際はそれ以外の6方向に動くことができる。
+		（Y: NowPosition-1,X: NowPosition+0）（Y: NowPosition-1,X:NowPosition+1）（Y: NowPosition+0,X: NowPosition+1）
+		（Y: NowPosition+1,X: NowPosition+1）（Y: NowPosition+1,X: NowPosition+0）（Y: NowPosition,X: NowPosition)
+		イベントがいつ発生するかがわかる。
+		現在地を持っている。
+		イベントが決まり、Personが動きだしたら、動かない確率を低くする。
 
 Map
     １マス: ２m * 2m
 	面積: [59m * 29m 、 30マス * 15マス]
 		バスケコート面積28m×15mから、トイレや食事場所含むを考慮して30マス×15マス
+		人が最大いる位置は、59m×29m
+		理由：人は、マス目の中心を移動するため。
+			例えば、10m*10mを再現したければ、11マス11マス
 
-    ゆくゆくは障害物欲しいね
+	 ゆくゆくは障害物欲しいね
 
 シミュレーション
 	dt: 3sec
+	1日17時間(6:00~23:00)
 	イベント発生をタッチ＆ゴーに設定。
+	初めのイベントは住居スペーススタート。
+	住居スペースは、(Y:0,X:0)から(Y:18,X:9)
 	感染条件
-		初期値: ２人（２％）1人の場合は？
-		1/10の確率で感染　％変えたら？
+		1人1人に10%の確率で感染判定を行う。
+
+		(初期値: ２人（２％）1人の場合は？)
+		(1/10の確率で感染　％変えたら？)
 
 イベント
-	BathRoom:27.5min、CheckBoard:27.9min、ChangeClthes:27.9min、Eat:90min、ランダムウォーク232.5min、　stay:604.5min
-	BathRoom:4%、CheckBoard:3%、ChangeClthes:3%、Eat:90min、ランダムウォーク:25％、stay:65%
-	
-	イベント時間調べてくる　　７０分/９３０分
-	BathRoom、、CheckBoard、ChangeClthes、Eat、stay
-	
+	BathRoom:29.25min、CheckBoard:19.5min、ChangeClthes:29.25min、MealTime(Eat):45min、Stroll(ランダムウォーク)29.25min、　stay:867.75min
+	BathRoom:3%、CheckBoard:2%、ChangeClthes:3%、MealTime:45min、ランダムウォーク:3％、stay:89%
+	百分率で決まるのではなく、毎回0～1のランダムの数字を呼び出しているため、百分率通りのLifeActionになるとは限らない。
+	他のLifeAction実行中にMealTimeがきた場合は、MealTimeを優先する。
+	目的地到着後、Stayイベントが出ると、HomePositionに帰る。(GoHome)
+
+	日本トイレ協会によると、
+	一日あたりトイレに行く回数は５回,そこから、3%を算出
+
 	ご飯の時間
-	1020min(17時間)ー90min=930min(15時間30分) 8.82352941%
+	1日3回　7:00、12:00、18:00
+	25人×4グループで15分ごとに動く。
+	1回目　7:00,7:15,7:30,7:45
+	2回目　12:00,12:15,12:30,12:45
+	3回目　18:00,18:15,18:30,18:45
+	そのため、15分×3回＝45分
+	1020min(17時間)ー45min=975min
+	イベント時間調べてくる　　107.25分/975分(MealTime引いてるから975分)
+	イベントは、BathRoom、、CheckBoard、ChangeClthes、MealTime、Stroll、stayの5種類 
 
+配置(position.go)
+	掲示板(Y:MapSiseY,X:MapSiseX)
+	更衣室(Y:MapSizeY/2,X:MapSizeX)
+	トイレ(Y:0,X:mapSizeX)
+	食事(配膳場所)(Y:mapSize-5,X:0), (Y:mapSize,X:0) , (Y:mapSizeY,X:5) 
 
-	後々数値いじる系のまとめ 
+後々、数値変えれるように設定するもの(config.ini)
 	感染確率
 	避難者人数
 	イベント発生確率
-	(マスの大きさ)
-	食事時間のグループ分け
-	潜伏期間
+	マスの大きさ
+	GridCapacity(1マスに何人入れるか)
+	TimeInterval (時間間隔)
+	初期感染者(Infected)
+	(食事時間のグループ分け)
+	(潜伏期間)
 
 
-	今後やりたいこと
+今後やりたいこと
 	・健康、潜伏、感染にわけて、潜伏の時は自由に動きまわり、感染したら、自分の住居スペースでストップ(隔離をイメージ)➝相談
 	・イベントの追加ってできる？
 		避難所でフラッとする時間を再現したくて。
