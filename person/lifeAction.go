@@ -12,7 +12,7 @@ func init() {
 		Stroll:       0.03,
 		CheckBoard:   0.02,
 		ChangeClthes: 0.03,
-		BathRoom:     0.03,
+		RestRoom:     0.03,
 	}
 
 	TimeRequired = map[LifeAction]float64{
@@ -29,7 +29,7 @@ const (
 	Stroll       LifeAction = "Stroll"
 	CheckBoard   LifeAction = "CheckBoard"
 	ChangeClthes LifeAction = "ChangeClthes"
-	BathRoom     LifeAction = "BathRoom"
+	RestRoom     LifeAction = "RestRoom"
 	Meal         LifeAction = "Meal"
 	GoHome       LifeAction = "GoHome"
 )
@@ -40,7 +40,7 @@ var (
 	// KeyをLifeAction、ValueをStayとStrollの所要時間としたMap。
 	TimeRequired map[LifeAction]float64
 	// 確率で決まるLifeActionの配列
-	key [5]LifeAction = [5]LifeAction{Stay, BathRoom, ChangeClthes, CheckBoard, Stroll}
+	key [5]LifeAction = [5]LifeAction{Stay, RestRoom, ChangeClthes, CheckBoard, Stroll}
 )
 
 // probabilityMapからランダムにLifeActionを決める。

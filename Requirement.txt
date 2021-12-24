@@ -38,8 +38,8 @@ Map
 		(1/10の確率で感染　％変えたら？)
 
 イベント
-	BathRoom:29.25min、CheckBoard:19.5min、ChangeClthes:29.25min、MealTime(Eat):45min、Stroll(ランダムウォーク)29.25min、　stay:867.75min
-	BathRoom:3%、CheckBoard:2%、ChangeClthes:3%、MealTime:45min、ランダムウォーク:3％、stay:89%
+	RestRoom:29.25min、CheckBoard:19.5min、ChangeClthes:29.25min、MealTime(Eat):45min、Stroll(ランダムウォーク)29.25min、　stay:867.75min
+	RestRoom:3%、CheckBoard:2%、ChangeClthes:3%、MealTime:45min、ランダムウォーク:3％、stay:89%
 	百分率で決まるのではなく、毎回0～1のランダムの数字を呼び出しているため、百分率通りのLifeActionになるとは限らない。
 	他のLifeAction実行中にMealTimeがきた場合は、MealTimeを優先する。
 	目的地到着後、Stayイベントが出ると、HomePositionに帰る。(GoHome)
@@ -56,7 +56,7 @@ Map
 	そのため、15分×3回＝45分
 	1020min(17時間)ー45min=975min
 	イベント時間調べてくる　　107.25分/975分(MealTime引いてるから975分)
-	イベントは、BathRoom、、CheckBoard、ChangeClthes、MealTime、Stroll、stayの5種類 
+	イベントは、RestRoom、、CheckBoard、ChangeClthes、MealTime、Stroll、stayの5種類 
 
 配置(position.go)
 	掲示板(Y:MapSiseY,X:MapSiseX)
