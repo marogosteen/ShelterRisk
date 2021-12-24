@@ -15,7 +15,6 @@ import (
 /*
 TODO
 	simu run MoversPositionMapの移動の表現
-	[]int...の動作確認
 	10人だと住居スペースが縦に並ぶ。
 	Eatがまだ　Eatは絶対ホームに戻る
 	Simulation.PositionsMapの動作確認

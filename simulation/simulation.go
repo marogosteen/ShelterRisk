@@ -114,7 +114,7 @@ func (s *SimulationModel) Run(interval time.Duration) {
 
 				// 目的地に到達、次の目的地。
 				if p.IsDone() {
-					p.SetNextDistination()
+					p.SetDistination()
 				}
 
 				// LifeActionに合わせた動作。
