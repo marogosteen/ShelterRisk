@@ -19,7 +19,7 @@ func init() {
 	distinationListMap = map[LifeAction][]Position{
 		CheckBoard:   {Position{Y: mapSizeY, X: mapSizeX}},
 		ChangeClthes: {Position{Y: mapSizeY / 2, X: mapSizeX}},
-		BathRoom:     {Position{Y: 0, X: mapSizeX}},
+		RestRoom:     {Position{Y: 0, X: mapSizeX}},
 		Meal: {
 			Position{Y: mapSizeY - 5, X: 0},
 			Position{Y: mapSizeY, X: 0},
