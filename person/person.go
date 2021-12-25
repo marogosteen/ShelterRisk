@@ -103,7 +103,7 @@ func (p *PersonModel) Move(mapSize Position) (nextPosition Position) {
 	yCourse := 0
 	xCourse := 0
 
-	// 縦方向と横方向の-1から1の移動量。
+	// 縦方向と横方向の-1から1の移動量に直す。
 	if !(diffY == 0) {
 		yCourse = diffY / absDiffY
 	}
@@ -116,9 +116,7 @@ func (p *PersonModel) Move(mapSize Position) (nextPosition Position) {
 			p.NowPosition.Y + yCourse,
 			p.NowPosition.X + xCourse,
 		}
-	}
-
-	if absDiffY > absDiffX {
+	} else if absDiffY > absDiffX {
 		nextPosition = Position{
 			p.NowPosition.Y + yCourse,
 			p.NowPosition.X,

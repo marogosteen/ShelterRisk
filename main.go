@@ -23,7 +23,6 @@ TODO
 		Moveは常に実行前に目的地をPassedでチェックする。
 	LifeActionElapsedTimeのInitilizeがいるのでは？？
 	stay と　Strollは乱数で前後させたいな。
-	move 斜め移動
 */
 
 func main() {
