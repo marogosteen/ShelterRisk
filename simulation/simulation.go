@@ -55,31 +55,23 @@ func NewSimulationModel(
 	return s, nil
 }
 
+// 感染状況を表示する
 func (s *SimulationModel) ShowInfo() {
-	movercount2 := 0
 	infectedcount := 0
 	for _, p := range s.People {
 		fmt.Printf("%+v,\n", p)
 		if p.InfectionStatus != person.Health {
 			infectedcount++
 		}
-		if p.LifeAction != person.Stay {
-			movercount2++
-		}
 	}
-	fmt.Println("\nmoversposition")
-	movercount1 := 0
-	for key, pl := range s.MoversPosition {
-		movercount1 += len(pl)
-		fmt.Printf("%v %+v\n", key, pl)
+	movercount := 0
+	for _, pl := range s.MoversPosition {
+		movercount += len(pl)
 	}
 	fmt.Println()
 	fmt.Println("Date", s.currentDate)
 	fmt.Println("infectedcount", infectedcount)
-	fmt.Println("movercount", movercount1)
-	if !(movercount1 == movercount2) {
-		log.Fatal(errors.New("movercountが一致しない"))
-	}
+	fmt.Println("movercount", movercount)
 
 	fmt.Printf("\n\n")
 }
