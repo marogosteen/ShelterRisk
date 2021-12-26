@@ -194,13 +194,22 @@ func (p *PersonModel) SetDistination() {
 // 次のActionとDistinationをSetする。ActionがGoHomeでない場合（現在地がHomePositionでない場合）は、
 // StayイベントがGoHomeとなる。
 func (p *PersonModel) setLifeAction() LifeAction {
+	// LifeAction変更時、PassedCountとLifeActionElapsedSecは必ず０に初期化される。
 	p.PassedCount = 0
 	p.LifeActionElapsedSec = 0
 	var nextLifeAction LifeAction
 
-	nextLifeAction = getRandomAction()
-	if nextLifeAction == Stay && p.NowPosition != p.HomePosition {
+	switch p.LifeAction {
+	// 現在のLifeActionがMealである場合は強制的にGoHomeとなる。
+	case Meal:
 		nextLifeAction = GoHome
+	default:
+		nextLifeAction = getRandomAction()
+		// nextLifeActionがStayとなったとき、現在地がHomePositionでなければGoHomeとなる。
+		// じゃあGoHomeがついたときはどうする？ -> 強制Stay？ -> じゃあ食事の時後のGoHome後は？
+		if nextLifeAction == Stay && p.NowPosition != p.HomePosition {
+			nextLifeAction = GoHome
+		}
 	}
 
 	return nextLifeAction
